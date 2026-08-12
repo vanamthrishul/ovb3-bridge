@@ -1,0 +1,24 @@
+node_modules/
+dist/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# local VBS/VBCS repo checkouts pointed to by VBS_WORKSPACE_DIR / VBCS_REPO_PATH
+/workspace/
+/repos/
+*.log
+.DS_Store
+
+# local-only permission grants; .claude/commands/ IS committed (shared slash commands)
+.claude/settings.local.json
+
+# local-only session log/build-brief for Claude Code — not public-facing docs,
+# accumulates internal history (hostnames, incidents, etc). Kept on disk, not shipped.
+CLAUDE.md
+
+# local-only backup of pre-squash git history (real hostname, old CLAUDE.md
+# content) — deliberately never committed, see CLAUDE.md history-rewrite entry.
+/.git-history-backup/

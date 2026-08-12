@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "vbcs": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["dist/server.js"]
+    }
+  }
+}

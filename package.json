@@ -1,0 +1,38 @@
+{
+  "name": "ovb3-bridge",
+  "version": "0.1.0",
+  "description": "OVB3 (Oracle Visual Builder Bridge) — MCP server + CLI for driving Oracle Visual Builder Studio / VBCS app development (artifacts, build/audit, git, REST) from Claude.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "bin": {
+    "ovb3": "./dist/cli.js"
+  },
+  "main": "./dist/server.js",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/server.ts",
+    "start": "node dist/server.js",
+    "cli": "tsx src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/core": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "dotenv": "^16.4.5",
+    "fast-glob": "^3.3.2",
+    "simple-git": "^3.25.0",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4",
+    "vitest": "^4.1.10"
+  }
+}
