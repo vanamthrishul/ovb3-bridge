@@ -171,10 +171,14 @@ These are Oracle-provided npm packages distributed via a private Oracle CDN
 tarball feed, not public npm. Install them into whichever VB Studio repo
 checkout you're building/auditing (not into this toolkit's own
 `node_modules`) — follow Oracle's own install steps for those packages in
-whichever VB Studio project you're working against. `run_build` / `run_audit` shell out to
-`npx grunt vb-build` / `npx grunt vb-audit` inside that repo; the exact task
-flags are TODO-marked in `src/tools/build.ts` pending confirmation against a
-real Gruntfile.
+whichever VB Studio project you're working against. `run_build` / `run_audit`
+shell out to `npx grunt vb-build` / `npx grunt vb-audit` inside that repo —
+both task names confirmed correct against real installed package source.
+Both also need your org's Component Exchange URL (`VB_BUILD_COMPONENT_EXCHANGE_URL`
+in `.env`) to work on apps with shared/custom components (the normal case);
+without it, `run_build` fails with Oracle's own "Missing mandatory component
+exchange URL" error. `run_audit` additionally needs working connectivity to a
+live VB Studio backend/tenant service — unresolved as of now, see `build.ts`.
 
 ## Running the MCP server or CLI directly
 
