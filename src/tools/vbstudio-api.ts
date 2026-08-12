@@ -1,11 +1,17 @@
 import { logWarn } from "../lib/logger.js";
 
 /**
- * VB Studio / VBCS REST API calls (CI/CD builds, environment management,
- * deploy, etc). Per the project brief, this is BLOCKED until a real dev
- * instance + credentials are available: we do not fabricate endpoint paths
- * or payload shapes. Every function here throws until it's replaced with a
- * real implementation confirmed against that instance's actual behavior.
+ * VB Studio's own REST API (CI/CD builds, environment management, deploy,
+ * etc) — NOT the same thing as the grunt-vb-build/grunt-vb-audit CLI tasks
+ * in build.ts, despite the similar naming (triggerBuild here vs. the
+ * "vb-build" grunt task there). That one runs locally against a git
+ * checkout and has been confirmed working (task names verified, real
+ * blockers identified — see build.ts); this one is VB Studio's hosted
+ * CI/CD service reached over HTTP, and remains fully unconfirmed. Per the
+ * project brief, this is BLOCKED until a real dev instance + credentials
+ * are available: we do not fabricate endpoint paths or payload shapes.
+ * Every function here throws until it's replaced with a real implementation
+ * confirmed against that instance's actual behavior.
  */
 
 export class VbStudioApiNotImplementedError extends Error {
