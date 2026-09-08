@@ -24,8 +24,8 @@
     "url": "https://github.com/vanamthrishul/ovb3-bridge/issues"
   },
   "bin": {
-    "ovb3": "./dist/cli.js",
-    "ovb3-bridge": "./dist/server.js"
+    "ovb3": "dist/cli.js",
+    "ovb3-bridge": "dist/server.js"
   },
   "main": "./dist/server.js",
   "files": [
