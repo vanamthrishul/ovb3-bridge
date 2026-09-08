@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { loadEnv } from "./lib/env.js";
 loadEnv();
 
@@ -13,7 +14,7 @@ import * as build from "./tools/build.js";
 import * as vbstudioApi from "./tools/vbstudio-api.js";
 import * as vbcsApi from "./tools/vbcs-api.js";
 
-const server = new McpServer({ name: "ovb3-bridge", version: "0.1.0" });
+const server = new McpServer({ name: "ovb3-bridge", version: "0.2.0" });
 
 const repoParam = z
   .string()

@@ -5,6 +5,43 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-09-08
+
+Repositioned as a distributable Claude Code plugin for any VBS/VBCS
+developer, not a personal tool. No breaking changes to the underlying MCP
+tools themselves.
+
+### Added
+
+- Packaged as a Claude Code **plugin** (`.claude-plugin/plugin.json` +
+  `.claude-plugin/marketplace.json`): `/plugin marketplace add
+  vanamthrishul/ovb3-bridge` + `/plugin install ovb3@ovb3` is now the whole
+  install, no clone/build step required.
+- Plugin `userConfig` (VBS workspace directory, default repo/app, Component
+  Exchange URL) replaces manual `.env` editing for plugin installs — prompted
+  at install time, stored by Claude Code, substituted into the MCP server's
+  environment automatically.
+- MCP server published to npm as `ovb3-bridge`, launchable via `npx -y
+  ovb3-bridge` — used by the plugin's bundled `.mcp.json`, and usable directly
+  by anyone who'd rather add it to their own `.mcp.json` without the plugin
+  system.
+- `commands/` at the plugin root (copied from `.claude/commands/`) so all
+  `/vbs-*`/`/vbcs-*` commands ship with the plugin, namespaced as
+  `/ovb3:vbs-*` etc.
+- `docs/VBS-GUIDE.md` — the confirmed VB Studio repo layout, chain-file JS
+  service-call conventions, and grunt-vb-build/grunt-vb-audit requirements,
+  as public, project-agnostic reference material (previously only captured
+  in this maintainer's private local notes).
+- `/link` rewritten to work against plugin config instead of editing a local
+  `.env` file, since a plugin install has no such file in the target project.
+
+### Changed
+
+- README repositioned: git-based VBS is the primary, advertised path;
+  standalone-VBCS REST tools are still shipped and documented, but as a
+  secondary surface, not the lead pitch.
+- `package.json`: no longer `private`, added `files` allowlist, `repository`/`homepage`/`bugs`/`keywords` for npm registry listing.
+
 ## [0.1.0] - 2026-08-12
 
 Initial public release.

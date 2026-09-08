@@ -1,14 +1,39 @@
 {
   "name": "ovb3-bridge",
-  "version": "0.1.0",
-  "description": "OVB3 (Oracle Visual Builder Bridge) — MCP server + CLI for driving Oracle Visual Builder Studio / VBCS app development (artifacts, build/audit, git, REST) from Claude.",
+  "version": "0.2.0",
+  "description": "OVB3 (Oracle Visual Builder Bridge) — MCP server + CLI + Claude Code plugin for driving Oracle Visual Builder Studio (VBS) git-backed app development from Claude: read/write VBCS artifacts, run Oracle's build/audit tasks, and git commit/push/pull.",
   "type": "module",
-  "private": true,
   "license": "MIT",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "oracle",
+    "visual-builder",
+    "vbcs",
+    "vb-studio",
+    "claude",
+    "claude-code",
+    "claude-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vanamthrishul/ovb3-bridge.git"
+  },
+  "homepage": "https://github.com/vanamthrishul/ovb3-bridge#readme",
+  "bugs": {
+    "url": "https://github.com/vanamthrishul/ovb3-bridge/issues"
+  },
   "bin": {
-    "ovb3": "./dist/cli.js"
+    "ovb3": "./dist/cli.js",
+    "ovb3-bridge": "./dist/server.js"
   },
   "main": "./dist/server.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    ".env.example"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc -p tsconfig.json",

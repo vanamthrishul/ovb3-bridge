@@ -1,0 +1,40 @@
+{
+  "name": "ovb3",
+  "displayName": "OVB3 — Oracle Visual Builder Bridge",
+  "description": "Read/write VBCS artifacts (pages, flows, chains, services), commit/push/pull, and run Oracle's grunt-vb-build/grunt-vb-audit against a git-backed Visual Builder Studio project checkout — all from Claude.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Vanam Thrishul",
+    "url": "https://github.com/vanamthrishul"
+  },
+  "homepage": "https://github.com/vanamthrishul/ovb3-bridge#readme",
+  "repository": "https://github.com/vanamthrishul/ovb3-bridge",
+  "license": "MIT",
+  "keywords": ["oracle", "visual-builder", "vbcs", "vb-studio", "mcp"],
+  "userConfig": {
+    "vbs_workspace_dir": {
+      "type": "directory",
+      "title": "VBS workspace directory",
+      "description": "A local folder that holds (or will hold) git checkouts of your VB Studio project repos. list_repos/list_apps discover what's under here.",
+      "required": true
+    },
+    "vbcs_repo_path": {
+      "type": "directory",
+      "title": "Default repo checkout (optional)",
+      "description": "Absolute path to one repo checkout to use by default when a tool call doesn't specify one. Leave blank if you work across multiple repos.",
+      "required": false
+    },
+    "vbcs_app_name": {
+      "type": "string",
+      "title": "Default app name (optional)",
+      "description": "VBCS web app name (webApps/<name>) to use by default when a tool call doesn't specify one.",
+      "required": false
+    },
+    "component_exchange_url": {
+      "type": "string",
+      "title": "Component Exchange URL (optional)",
+      "description": "Your org's Component Exchange URL, required by grunt-vb-build/grunt-vb-audit for apps using shared/custom components (the normal case). Leave blank if you don't know it yet — build/audit will surface Oracle's own clear error instead of guessing.",
+      "required": false
+    }
+  }
+}

@@ -2,8 +2,14 @@
   "mcpServers": {
     "vbcs": {
       "type": "stdio",
-      "command": "node",
-      "args": ["dist/server.js"]
+      "command": "npx",
+      "args": ["-y", "ovb3-bridge"],
+      "env": {
+        "VBS_WORKSPACE_DIR": "${user_config.vbs_workspace_dir}",
+        "VBCS_REPO_PATH": "${user_config.vbcs_repo_path}",
+        "VBCS_APP_NAME": "${user_config.vbcs_app_name}",
+        "VB_BUILD_COMPONENT_EXCHANGE_URL": "${user_config.component_exchange_url}"
+      }
     }
   }
 }
