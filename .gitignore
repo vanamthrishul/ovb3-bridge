@@ -22,3 +22,6 @@ CLAUDE.md
 # local-only backup of pre-squash git history (real hostname, old CLAUDE.md
 # content) — deliberately never committed, see CLAUDE.md history-rewrite entry.
 /.git-history-backup/
+
+# local-only reference material for Claude Code, not for the repo/public
+/JUST FOR REFRANCE/
