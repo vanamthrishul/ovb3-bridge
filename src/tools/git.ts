@@ -11,6 +11,13 @@ function client(repoRoot: string): SimpleGit {
  * Clones a git remote into VBS_WORKSPACE_DIR/destName so it's immediately
  * discoverable by list_repos. Used by /link's VBS setup flow when the user
  * doesn't already have a local checkout.
+ *
+ * If this hangs instead of failing, the OS credential manager is likely
+ * waiting on an interactive prompt with no terminal to show it (this is what
+ * happened cloning TestRepo — see CLAUDE.md's existing-gaps session entry).
+ * Check `git config --global --list | grep credential`; clear the cached
+ * entry for the host if it's missing/wrong, or use an embedded-token remote
+ * URL instead so no prompt is needed.
  */
 export async function gitClone(remoteUrl: string, destName: string): Promise<{ path: string }> {
   return withLogging("gitClone", { remoteUrl, destName }, async () => {

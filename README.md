@@ -144,12 +144,25 @@ to a live VB Studio backend/tenant service — see
 [`docs/VBS-GUIDE.md`](docs/VBS-GUIDE.md) for the confirmed details and known
 limitation there.
 
+**If `npm install` fails in that repo checkout**, check general network/proxy
+access to `static.oracle.com` (where the Oracle build-tooling tarballs are
+pinned by URL in `package.json`) and `registry.npmjs.org` first. If only
+non-Oracle packages fail, suspect a stale or broken token in your global
+`.npmrc` rather than the Oracle tarball URLs.
+
 ### Git credentials
 
 OVB3 doesn't handle git authentication itself — `git_clone`/`git_pull`/`git_push`
 shell out to your system's own git, so set up credentials for your VB Studio
 remote the normal way (a credential manager, an embedded token in the remote
 URL, or SSH keys) before using those tools.
+
+**If a clone/pull/push hangs instead of failing**, it's usually your OS
+credential manager silently waiting on an interactive prompt it has no
+terminal to show. Check what's cached with `git config --global --list |
+grep credential` — if the entry for your VB Studio host is missing or wrong,
+clear it from your OS credential manager and retry so git re-prompts (or
+switch to an embedded-token remote URL, which never needs a prompt).
 
 ## Also included: standalone VBCS REST tools
 
