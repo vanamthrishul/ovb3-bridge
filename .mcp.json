@@ -3,12 +3,23 @@
     "vbcs": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "ovb3-bridge"],
+      "args": [
+        "-y",
+        "ovb3-bridge"
+      ],
       "env": {
         "VBS_WORKSPACE_DIR": "${user_config.vbs_workspace_dir}",
         "VBCS_REPO_PATH": "${user_config.vbcs_repo_path}",
         "VBCS_APP_NAME": "${user_config.vbcs_app_name}",
-        "VB_BUILD_COMPONENT_EXCHANGE_URL": "${user_config.component_exchange_url}"
+        "VB_BUILD_COMPONENT_EXCHANGE_URL": "${user_config.component_exchange_url}",
+        "VBSTUDIO_GIT_USERNAME": "${user_config.vbstudio_git_username}",
+        "VBSTUDIO_GIT_TOKEN": "${user_config.vbstudio_git_token}",
+        "VBSTUDIO_GIT_USER_NAME": "${user_config.vbstudio_git_user_name}",
+        "VBSTUDIO_GIT_USER_EMAIL": "${user_config.vbstudio_git_user_email}",
+        "VBCS_BASE_URL": "${user_config.vbcs_base_url}",
+        "VBCS_IDCS_USERNAME": "${user_config.vbcs_idcs_username}",
+        "VBCS_IDCS_PASSWORD": "${user_config.vbcs_idcs_password}",
+        "VBSTUDIO_API_TOKEN": "${user_config.vbstudio_api_token}"
       }
     }
   }

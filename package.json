@@ -1,6 +1,6 @@
 {
   "name": "ovb3-bridge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "OVB3 (Oracle Visual Builder Bridge) — MCP server + CLI + Claude Code plugin for driving Oracle Visual Builder Studio (VBS) git-backed app development from Claude: read/write VBCS artifacts, run Oracle's build/audit tasks, and git commit/push/pull.",
   "type": "module",
   "license": "MIT",

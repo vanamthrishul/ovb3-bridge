@@ -3,52 +3,140 @@
 **OVB3** = **O**racle **V**isual **B**uilder + **3** (a nod to Thrishul —
 त्रिशूल, trident) + **Bridge**.
 
-A Claude Code plugin (+ MCP server + CLI) for working on **git-backed Visual
-Builder Studio (VBS) / VBCS apps** directly from Claude: read/write VBCS
-artifacts (pages, flows, chains, service definitions), commit/push/pull, and
-run Oracle's own `grunt-vb-build`/`grunt-vb-audit` — all without leaving your
-editor for the VB Studio browser IDE.
+Work on **Oracle Visual Builder Studio (VBS) / VBCS** apps from Claude instead
+of the browser IDE. OVB3 is a Claude Code plugin, an MCP server and a CLI that
+let Claude read, search, edit, build, audit, commit and push the files a VB
+Studio project is made of — plus manage data and CI jobs on your instance.
 
-This favors **artifact/git-based automation** (editing the JSON/JS files a
-VB Studio project is actually made of, then using git + Oracle's own
-`grunt-vb-*` tasks) over browser automation of the VB Studio design-time UI,
-which has no documented public API and is brittle to script. See
-[`docs/VBS-GUIDE.md`](docs/VBS-GUIDE.md) for the confirmed repo layout, chain
-JS conventions, and build/audit requirements this is built against.
+It deliberately works on the **artifacts and git** (the JSON/JS files and the
+repo behind a VB Studio project, plus Oracle's own `grunt-vb-*` tasks) rather
+than scripting the design-time browser UI, which has no public API and breaks
+whenever Oracle updates it. See [`docs/VBS-GUIDE.md`](docs/VBS-GUIDE.md) for the
+confirmed repo layout and build behavior this is built against.
 
-The toolkit targets a whole VBS **instance**, not one hardcoded app: an
-instance hosts multiple VB Studio projects (each its own git repo), and each
-repo can hold multiple VBCS web apps under `webApps/`. Every tool takes the
-repo and app as arguments — nothing is wired to a single project, so this
-works the same for any VBS developer, on any project.
+Nothing is tied to one project: an instance hosts many VB Studio projects (git
+repos), each holding many apps under `webApps/`, and every tool takes the repo
+and app as arguments.
 
-## Install (recommended: as a Claude Code plugin)
+## Quick start
+
+**1. Install** (Claude Code):
 
 ```
 /plugin marketplace add vanamthrishul/ovb3-bridge
 /plugin install ovb3@ovb3
 ```
 
-Claude Code will prompt you for the plugin's configuration:
+Claude Code asks for a **workspace folder** (any folder to hold your repo
+checkouts) and, optionally, git credentials and defaults. Secrets such as the
+git token are kept in your system keychain.
 
-- **VBS workspace directory** (required) — a local folder that holds (or will
-  hold) git checkouts of your VB Studio project repos.
-- **Default repo checkout** / **default app name** (optional) — convenience
-  defaults if you mostly work against one project.
-- **Component Exchange URL** (optional) — needed later for `run_build`/`run_audit`
-  on apps with shared/custom components (see below); safe to leave blank
-  until you know it.
+**2. Link a project:** run `/ovb3:link` — it walks you through cloning a repo
+(or pointing at one you already have).
 
-That's the whole install — no cloning this repo, no `npm install`, no editing
-`.mcp.json` by hand. Then run `/link` in any project to point it at a real
-checkout (or clone one) and confirm everything's wired up.
+**3. Check it:** run `/ovb3:vbs-doctor`. It tells you what works, what's
+missing, and the exact fix for each — **this is the first thing to run
+whenever something doesn't work.**
 
-To reconfigure later: `/plugin` → **OVB3** → Configure, then `/reload-plugins`.
+No Claude Code? The same tools ship as a CLI and a plain MCP server — see
+[Other ways to run it](#other-ways-to-run-it).
 
-### Alternative: manual MCP config (no plugin)
+## What you can do
 
-If you'd rather not use the plugin system, add the server to any project's
-`.mcp.json` directly — it runs via `npx`, no local clone needed:
+| Area | Tools (also `ovb3 <command>` in the CLI) | Notes |
+|---|---|---|
+| **Diagnose** | `doctor` | Checks Node, git, workspace, credentials, build tools; never prints secrets |
+| **Browse & edit** | `list_repos`, `list_apps`, `list_artifacts`, `read_artifact`, `write_artifact` | `write_artifact` refuses invalid JSON and any path outside the repo |
+| **Search** | `search_artifacts` | Grep file *content* (text or regex) across a repo |
+| **Cross-app audit** | `audit_service_calls` | Finds every `Actions.callRest` call and flags parameter keys some apps send and others omit |
+| **Git** | `git_status`, `git_commit`, `git_pull`, `git_push`, `git_clone` | Non-interactive: authenticates with your token and fails fast instead of hanging |
+| **Build & audit** | `setup_build_tools`, `run_build`, `run_audit` | Oracle's `grunt-vb-build` / `grunt-vb-audit`; failures come with a plain-language hint |
+| **VB Studio CI** | `vbstudio_trigger_build`, `vbstudio_build_status`, `vbstudio_job_params` | Oracle's documented Builds REST API; the base URL is derived from your repo's git remote |
+| **Standalone VBCS** | `vbcs_list_applications`, `vbcs_lock_application`, `vbcs_unlock_application`, `vbcs_export_bo_data`, `vbcs_import_bo_data` | For VBCS apps with no VB Studio project; export/import business-object data as CSV/ZIP |
+
+Slash commands exist for each (`/vbs-help` and `/vbcs-help` list them; they're
+namespaced `/ovb3:…` when installed as a plugin). You can also just ask in
+plain language — "find every app that calls the Orders service without the
+`region` parameter" resolves to the same tools.
+
+### Example: check a shared service is called consistently
+
+```
+/vbs-audit-calls my-vbs-project Orders/getOrders
+```
+
+reports, per endpoint, which apps call it and any parameter key that some apps
+pass and others don't. It compares which keys are passed, not their values
+(values are arbitrary expressions).
+
+## Setting up credentials
+
+Never paste credentials into a Claude conversation. Set them in plugin
+settings (`/plugin` → **OVB3** → Configure, then `/reload-plugins`) or in a
+config file (see below).
+
+| You want | Set |
+|---|---|
+| Clone / pull / push over HTTPS | `VBSTUDIO_GIT_USERNAME` + `VBSTUDIO_GIT_TOKEN` (a VB Studio personal access token) |
+| `run_build` / `run_audit` on apps with web components (most) | `VB_BUILD_COMPONENT_EXCHANGE_URL` — in VB Studio under Tenant Settings → Component Exchange; a private exchange looks like `https://<vbs-host>/<org>/s/<org>_<project>/compcatalog/0.2.0` |
+| VB Studio CI jobs | `VBSTUDIO_API_TOKEN` (or it reuses the git username/token) |
+| Standalone VBCS | `VBCS_BASE_URL` (bare host, **no** `/ic/builder`), `VBCS_IDCS_USERNAME`, `VBCS_IDCS_PASSWORD` |
+
+Git credentials are sent as a scoped HTTP header — never put in URLs, logs or
+`.git/config` — and everything logged or returned in an error is redacted.
+Personal access tokens **expire**: if git starts failing with "Authentication
+failed" on something that used to work, generate a new one.
+
+Outside the plugin, config is read from (highest priority first): real
+environment variables, `./.env`, then the install's own file — `<clone>/.env`
+for a git clone, `~/.ovb3/.env` for npm/npx installs (override with
+`OVB3_ENV_FILE`). [`.env.example`](.env.example) documents every variable.
+`ovb3 init` creates and fills it interactively (non-secret fields only).
+
+## Build and audit: what to expect
+
+`run_build` / `run_audit` run Oracle's tasks directly (no shell) inside your
+repo checkout:
+
+1. Run **`setup_build_tools`** once per checkout. VB Studio projects pin
+   Oracle's `grunt-vb-build` / `grunt-vb-audit` tarballs in their own
+   `package.json`, so no extra registry setup is needed. (If `npm install`
+   fails, check access to `static.oracle.com` and `registry.npmjs.org`; if only
+   non-Oracle packages fail, suspect a stale token in your global `.npmrc`.)
+2. Set the **Component Exchange URL** (above). Without it Oracle's own task
+   stops with *Missing mandatory component exchange URL* — OVB3 detects that
+   and tells you what to set. If your exchange needs a login, also set
+   `VB_BUILD_CE_USERNAME` + `VB_BUILD_CE_PASSWORD` (or `VB_BUILD_CE_ACCESS_TOKEN`).
+3. **`run_audit` also needs network access to a live Visual Builder backend**
+   (it fetches `vb.services.catalog.json`). On a machine that can't reach one
+   you'll see `ETIMEDOUT`; that's a connectivity requirement, not a config flag.
+
+Builds are stopped after 15 minutes by default (`OVB3_BUILD_TIMEOUT_MS`), and
+the whole process tree is killed, so nothing is left running.
+
+## Limits you should know about
+
+These are properties of Oracle's APIs, not gaps waiting to be filled:
+
+- **Standalone VBCS (no VB Studio project) has no page/flow editing.** Oracle's
+  published REST API for it has 14 endpoints — list/lock/unlock apps, a token
+  endpoint, credential CRUD, and business-object data export/import. There is no
+  whole-app export/import, version, build or deploy endpoint. If you want
+  artifact editing, work from the app's VB Studio project.
+- **VB Studio has no "deploy" API call** — deploys are CI jobs or pipelines, so
+  use `vbstudio_trigger_build` on the deploy job. Pipeline endpoints exist in
+  Oracle's docs but their request shapes weren't published clearly enough to
+  build against, so they're not included.
+- **The service-call audit reads JavaScript action chains** (`Actions.callRest`).
+  It's a comment- and string-aware scanner, not a full JS parser; unusual
+  dynamically built calls won't be seen.
+- **Data import replaces by default in Oracle's API**, so `vbcs_import_bo_data`
+  makes you choose `append` or `replace` explicitly.
+
+## Other ways to run it
+
+**Plain MCP config (no plugin)** — add to any project's `.mcp.json`; runs via
+`npx`, nothing to clone:
 
 ```json
 {
@@ -57,156 +145,52 @@ If you'd rather not use the plugin system, add the server to any project's
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "ovb3-bridge"],
-      "env": {
-        "VBS_WORKSPACE_DIR": "/absolute/path/to/a/workspace/folder",
-        "VBCS_REPO_PATH": "",
-        "VBCS_APP_NAME": "",
-        "VB_BUILD_COMPONENT_EXCHANGE_URL": ""
-      }
+      "env": { "VBS_WORKSPACE_DIR": "/absolute/path/to/a/workspace/folder" }
     }
   }
 }
 ```
 
-In this mode there's no `userConfig` prompt, so fill in the `env` block
-yourself — blank values are fine for the optional ones. You'll also want to
-copy `commands/*.md` from this repo into your project's `.claude/commands/`
-if you want the `/vbs-*` shortcuts (the plugin install gets these
-automatically, namespaced as `/ovb3:vbs-*`).
+Copy `commands/*.md` into `.claude/commands/` if you want the `/vbs-*` shortcuts.
 
-### Alternative: clone + build locally
+**CLI** — `npm install -g ovb3-bridge`, then `ovb3 init`, `ovb3 doctor`,
+`ovb3 list-repos`, `ovb3 search <repo> <text>`, … (`ovb3 --help` lists them all).
+Run `ovb3 init` yourself in a terminal; when driving setup through an AI agent,
+use `/link` instead — the wizard is interactive and an agent can't type into it.
 
-Useful for contributing to OVB3 itself, or if you want to run a specific
-commit rather than whatever's on npm:
+**From source** (contributing, or running an unreleased commit):
 
 ```bash
 git clone https://github.com/vanamthrishul/ovb3-bridge.git
 cd ovb3-bridge
 npm install      # also compiles TypeScript into dist/ (via "prepare")
-npm test         # optional sanity check — should be all green
+npm test
+node dist/cli.js doctor
 ```
 
-Then point a project's `.mcp.json` at `node`/`dist/server.js` with an
-absolute path instead of the `npx` form above.
+Every tool call is logged to stderr — what was touched, git operations,
+build/audit output as it streams — so nothing happens silently.
 
-## Using it — quick tour
+## Troubleshooting
 
-**Start with `/link`** (or `/ovb3:link` if you installed as a plugin) — it
-checks whether your VBS workspace directory is configured, then walks you
-through pointing at an existing repo checkout or cloning one.
+Run **`doctor`** first. Beyond that:
 
-Once linked:
+- **Git says "Authentication failed"** — your token is missing, wrong or expired
+  (see credentials above). OVB3 never waits on a hidden prompt; it fails in
+  seconds with this message.
+- **Git stalls then times out** — the host in the remote URL is unreachable. A
+  stale host in an old URL (e.g. a retired test environment) is a common cause.
+- **`Missing mandatory component exchange URL`** — set the Component Exchange URL.
+- **`Backend fetch failed … ETIMEDOUT` from `run_audit`** — this machine can't
+  reach a Visual Builder backend (VPN/proxy).
+- **VBCS login fails** — `VBCS_BASE_URL` must be the bare host. If you copied
+  it from the browser and it's very long with `?state=…` in it, that's a login
+  redirect, not the instance URL.
 
-| Command | What it does |
-|---|---|
-| `/vbs-help` | Lists all `/vbs-*` commands with their arguments |
-| `/vbs-list-repos` | Local VB Studio project checkouts under your workspace directory |
-| `/vbs-list-apps <repo>` | VBCS apps inside a repo (`webApps/<name>`) |
-| `/vbs-read <repo> <path>` | Read an artifact file |
-| `/vbs-write <repo> <path> [file]` | Write an artifact file |
-| `/vbs-list-artifacts <repo> <glob>` | Find artifacts matching a pattern |
-| `/vbs-git-status <repo>` | Git status |
-| `/vbs-git-commit <repo> <message>` | Stage + commit |
-| `/vbs-git-pull <repo>` | Pull |
-| `/vbs-git-push <repo>` | Push |
-| `/vbs-run-build <repo> [app]` | Run `grunt-vb-build` |
-| `/vbs-run-audit <repo> [app]` | Run `grunt-vb-audit` |
+## Contributing
 
-`<repo>` is either the exact folder name under your workspace directory, an
-absolute path, or `-`/omitted to use the default-repo setting.
+Issues and PRs welcome. `npm test` must pass; CI runs it on Linux, macOS and
+Windows. A packaging test keeps the two command folders, the version numbers
+and `.env.example` in sync with the code.
 
-Typical first run:
-
-```
-/link
-/vbs-list-repos
-/vbs-list-apps my-vbs-project
-/vbs-read my-vbs-project webApps/myApp/flows/main/main-flow.json
-```
-
-You don't have to use the slash commands — plain requests like "read the
-order-entry page flow in myApp" work too, since they resolve to the same
-underlying MCP tools. The commands just save you from typing that out every
-time.
-
-### grunt-vb-build / grunt-vb-audit
-
-These are Oracle-provided npm packages distributed via a private Oracle CDN
-tarball feed, not public npm. Install them into whichever VB Studio repo
-checkout you're building/auditing (not into OVB3's own dependencies) —
-follow Oracle's own install steps in whichever VB Studio project you're
-working against. `run_build`/`run_audit` shell out to `npx grunt vb-build` /
-`npx grunt vb-audit` inside that repo. Both need your org's Component
-Exchange URL to work on apps with shared/custom components (the normal
-case) — set it via plugin config, or `VB_BUILD_COMPONENT_EXCHANGE_URL` in the
-manual `.mcp.json` form. `run_audit` additionally needs working connectivity
-to a live VB Studio backend/tenant service — see
-[`docs/VBS-GUIDE.md`](docs/VBS-GUIDE.md) for the confirmed details and known
-limitation there.
-
-**If `npm install` fails in that repo checkout**, check general network/proxy
-access to `static.oracle.com` (where the Oracle build-tooling tarballs are
-pinned by URL in `package.json`) and `registry.npmjs.org` first. If only
-non-Oracle packages fail, suspect a stale or broken token in your global
-`.npmrc` rather than the Oracle tarball URLs.
-
-### Git credentials
-
-OVB3 doesn't handle git authentication itself — `git_clone`/`git_pull`/`git_push`
-shell out to your system's own git, so set up credentials for your VB Studio
-remote the normal way (a credential manager, an embedded token in the remote
-URL, or SSH keys) before using those tools.
-
-**If a clone/pull/push hangs instead of failing**, it's usually your OS
-credential manager silently waiting on an interactive prompt it has no
-terminal to show. Check what's cached with `git config --global --list |
-grep credential` — if the entry for your VB Studio host is missing or wrong,
-clear it from your OS credential manager and retry so git re-prompts (or
-switch to an embedded-token remote URL, which never needs a prompt).
-
-## Also included: standalone VBCS REST tools
-
-If some of your VBCS apps aren't backed by a VB Studio git repo at all (a
-"standalone" VBCS instance), OVB3 also ships `/vbcs-*` commands (list/lock/unlock
-applications, export business-object data) against that instance's REST API.
-These are a secondary, REST-only surface — Oracle doesn't expose page/flow
-CRUD for standalone instances, so there's no `/vbcs-read`/`/vbcs-write`
-equivalent. Run `/vbcs-help` for the current list; configuration for this path
-still uses a local `.env` file (`VBCS_BASE_URL`/`VBCS_IDCS_USERNAME`/`VBCS_IDCS_PASSWORD`
-— see `.env.example`) rather than plugin config, since it's not the primary
-supported path.
-
-## Running the MCP server or CLI directly
-
-```bash
-npm run build && npm start   # MCP server over stdio
-npm run dev                  # MCP server, dev mode (tsx, no build step)
-npm run cli -- list-repos    # CLI, for manual testing without an MCP host
-npm run cli -- list-apps <repo>
-npm run cli -- read <repo> webApps/myApp/flows/main/main-flow.json
-npm run cli -- run-build <repo> myApp
-```
-
-Every tool call — whether through MCP or the CLI — is logged to stderr:
-path/repo/app touched, git operations, and live-streamed stdout/stderr for
-build/audit runs. Nothing happens silently.
-
-## Status
-
-Verified against real cloned VBS project repos: discovery, artifact
-read/write, glob listing, git status/commit/pull/push, and `grunt-vb-build`/`grunt-vb-audit`
-(task names and `--app=` targeting) all confirmed working against live data.
-`run_build` needs a real Component Exchange URL to succeed on apps with
-shared components (the normal case); `run_audit` additionally needs VB
-Studio backend connectivity that isn't resolved yet — see
-[`docs/VBS-GUIDE.md`](docs/VBS-GUIDE.md).
-
-Standalone VBCS REST API (`/vbcs-*`): list applications, lock/unlock, and
-export business-object data are confirmed working against a real live
-instance. Import business-object data and credential management are
-deliberately left unbuilt (unpublished request shapes / not needed yet).
-
-VB Studio's own separate REST API (`vbstudio_*` tools — CI/CD build/deploy,
-a different product/base URL/auth from standalone VBCS above) is still fully
-stubbed: no live VB Studio instance access has been confirmed for it, so its
-endpoint shapes are deliberately not guessed at.
+MIT licensed.

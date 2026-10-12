@@ -10,13 +10,21 @@
       "name": "ovb3",
       "source": "./",
       "displayName": "OVB3 — Oracle Visual Builder Bridge",
-      "description": "Read/write VBCS artifacts, git commit/push/pull, and run grunt-vb-build/grunt-vb-audit against a git-backed VB Studio project checkout — from Claude.",
-      "version": "0.2.0",
-      "author": { "name": "Vanam Thrishul" },
+      "description": "Read/write and search VBCS artifacts, audit cross-app service calls, git commit/push/pull, run grunt-vb-build/grunt-vb-audit, trigger VB Studio CI jobs, and manage standalone VBCS data — from Claude.",
+      "version": "0.3.0",
+      "author": {
+        "name": "Vanam Thrishul"
+      },
       "homepage": "https://github.com/vanamthrishul/ovb3-bridge#readme",
       "repository": "https://github.com/vanamthrishul/ovb3-bridge",
       "license": "MIT",
-      "keywords": ["oracle", "visual-builder", "vbcs", "vb-studio", "mcp"],
+      "keywords": [
+        "oracle",
+        "visual-builder",
+        "vbcs",
+        "vb-studio",
+        "mcp"
+      ],
       "category": "productivity"
     }
   ]

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import * as readline from "node:readline/promises";
 
-import { resolveProjectRoot } from "./lib/env.js";
+import { defaultWorkspaceDir } from "./lib/env.js";
 import { ensureEnvFile, upsertEnvVars } from "./lib/env-writer.js";
 import * as artifacts from "./tools/artifacts.js";
 import * as git from "./tools/git.js";
@@ -37,7 +37,7 @@ async function vbsFlow(rl: readline.Interface): Promise<void> {
     console.log(`  Set VBS_WORKSPACE_DIR=${workspaceDir}`);
     repoRoot = resolved;
   } else {
-    const defaultWorkspace = path.join(resolveProjectRoot(), "workspace");
+    const defaultWorkspace = defaultWorkspaceDir();
     const workspaceInput = (await rl.question(`Workspace directory to clone into [${defaultWorkspace}]: `)).trim();
     const workspaceDir = path.resolve(workspaceInput || defaultWorkspace);
     fs.mkdirSync(workspaceDir, { recursive: true });

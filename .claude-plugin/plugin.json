@@ -1,8 +1,8 @@
 {
   "name": "ovb3",
   "displayName": "OVB3 — Oracle Visual Builder Bridge",
-  "description": "Read/write VBCS artifacts (pages, flows, chains, services), commit/push/pull, and run Oracle's grunt-vb-build/grunt-vb-audit against a git-backed Visual Builder Studio project checkout — all from Claude.",
-  "version": "0.2.0",
+  "description": "Read/write/search VBCS artifacts, audit cross-app service calls, commit/push/pull, run grunt-vb-build/grunt-vb-audit, trigger VB Studio CI jobs, and manage standalone VBCS data — all from Claude.",
+  "version": "0.3.0",
   "author": {
     "name": "Vanam Thrishul",
     "url": "https://github.com/vanamthrishul"
@@ -10,7 +10,13 @@
   "homepage": "https://github.com/vanamthrishul/ovb3-bridge#readme",
   "repository": "https://github.com/vanamthrishul/ovb3-bridge",
   "license": "MIT",
-  "keywords": ["oracle", "visual-builder", "vbcs", "vb-studio", "mcp"],
+  "keywords": [
+    "oracle",
+    "visual-builder",
+    "vbcs",
+    "vb-studio",
+    "mcp"
+  ],
   "userConfig": {
     "vbs_workspace_dir": {
       "type": "directory",
@@ -35,6 +41,57 @@
       "title": "Component Exchange URL (optional)",
       "description": "Your org's Component Exchange URL, required by grunt-vb-build/grunt-vb-audit for apps using shared/custom components (the normal case). Leave blank if you don't know it yet — build/audit will surface Oracle's own clear error instead of guessing.",
       "required": false
+    },
+    "vbstudio_git_username": {
+      "type": "string",
+      "title": "VB Studio git username (optional)",
+      "description": "Username for HTTPS git access to your VB Studio repos. With the token below, clone/pull/push run without any interactive prompt.",
+      "required": false
+    },
+    "vbstudio_git_token": {
+      "type": "string",
+      "title": "VB Studio git token (optional)",
+      "description": "A VB Studio personal access token. Stored in your system keychain, never written to URLs, logs or .git/config.",
+      "required": false,
+      "sensitive": true
+    },
+    "vbstudio_git_user_name": {
+      "type": "string",
+      "title": "Commit author name (optional)",
+      "description": "Name used on commits made through this plugin.",
+      "required": false
+    },
+    "vbstudio_git_user_email": {
+      "type": "string",
+      "title": "Commit author email (optional)",
+      "description": "Email used on commits made through this plugin.",
+      "required": false
+    },
+    "vbcs_base_url": {
+      "type": "string",
+      "title": "Standalone VBCS base URL (optional)",
+      "description": "Bare host of a standalone VBCS instance, e.g. https://vbcs-<tenant>-<env>.builder.<region>.ocp.oraclecloud.com (no /ic/builder). Only for VBCS apps without a VB Studio project.",
+      "required": false
+    },
+    "vbcs_idcs_username": {
+      "type": "string",
+      "title": "Standalone VBCS username (optional)",
+      "description": "IDCS username for the standalone VBCS instance.",
+      "required": false
+    },
+    "vbcs_idcs_password": {
+      "type": "string",
+      "title": "Standalone VBCS password (optional)",
+      "description": "IDCS password for the standalone VBCS instance. Stored in your system keychain.",
+      "required": false,
+      "sensitive": true
+    },
+    "vbstudio_api_token": {
+      "type": "string",
+      "title": "VB Studio API token (optional)",
+      "description": "Personal access token used as a bearer token for the VB Studio CI REST API. If blank, the git username/token above are tried as Basic auth.",
+      "required": false,
+      "sensitive": true
     }
   }
 }

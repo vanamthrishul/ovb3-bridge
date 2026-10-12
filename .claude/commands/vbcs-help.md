@@ -1,5 +1,14 @@
 ---
 description: List all /vbcs-* commands and what they do
-allowed-tools: Glob, Read
 ---
-Find every file matching .claude/commands/vbcs-*.md, read each one's YAML frontmatter (description and argument-hint), and present them as a table: command name (e.g. /vbcs-list-apps), arguments, and what it does. Keep each row to one line. After the table, add a one-line note that these tools target a standalone VBCS instance (VBCS_BASE_URL in .env, configured via /link) — not a VB Studio git repo, which is what the separate /vbs-* commands (see /vbs-help) are for.
+Show this table (the commands are namespaced /ovb3:vbcs-* when installed as a plugin) and nothing else except the footnote:
+
+| Command | Arguments | What it does |
+|---|---|---|
+| /vbcs-list-apps | [filter] | List applications on the standalone VBCS instance |
+| /vbcs-lock-app | branchId | Lock a live application (do this before data export/import) |
+| /vbcs-unlock-app | branchId | Unlock it again |
+| /vbcs-export-data | app version [bo] | Export business-object data (CSV, or ZIP of all) |
+| /vbcs-import-data | app version file append\|replace | Import business-object data from a local file |
+
+These talk to the instance in VBCS_BASE_URL with your IDCS login, and are for VBCS apps that have no VB Studio project. For git-backed VB Studio projects see /vbs-help. Run /vbs-doctor if a command can't connect.

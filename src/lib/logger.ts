@@ -8,6 +8,8 @@
  * whole stream there.
  */
 
+import { redactString, redactValue } from "./redact.js";
+
 export type LogLevel = "info" | "warn" | "error";
 
 export interface LogFields {
@@ -16,8 +18,8 @@ export interface LogFields {
 
 function format(level: LogLevel, action: string, fields?: LogFields): string {
   const ts = new Date().toISOString();
-  const suffix = fields && Object.keys(fields).length > 0 ? ` ${JSON.stringify(fields)}` : "";
-  return `[${ts}] [${level.toUpperCase()}] ${action}${suffix}`;
+  const suffix = fields && Object.keys(fields).length > 0 ? ` ${JSON.stringify(redactValue(fields))}` : "";
+  return `[${ts}] [${level.toUpperCase()}] ${redactString(action)}${suffix}`;
 }
 
 export function logAction(action: string, fields?: LogFields): void {

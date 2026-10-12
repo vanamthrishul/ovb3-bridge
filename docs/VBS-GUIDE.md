@@ -78,7 +78,53 @@ package source directly, not assumed from docs:
   a separate requirement from the Component Exchange URL, and isn't something
   a CLI flag can work around.
 
+## Component Exchange options
+
+From Oracle's grunt-task docs: `url[:ce]` is the Component Exchange service
+URL and is only needed when the app references web components. If the
+exchange needs a login, pass `username[:ce]` + `password[:ce]`, or
+`accessToken[:ce]` (a token wins if both are given). A private exchange hosted
+in a VB Studio project has a URL of the form
+`https://<vbs-host>/<org>/s/<org>_<project>/compcatalog/0.2.0`; the exchange
+is configured under Tenant Settings → Component Exchange, and its credentials
+should belong to an administrator who is a member of the hosting project.
+
+## VB Studio CI (Builds REST API)
+
+Documented base: `https://<server>/<org-id>/rest/<org-id_project-id>/cibuild/v1/`.
+The `<org-id_project-id>` part is the segment of a git remote URL before
+`/scm/` (`https://<server>/<org-id>/s/<org-id_project-id>/scm/<repo>.git`), so
+the base can be derived from any repo's `origin`.
+
+| Call | Request | Response |
+|---|---|---|
+| Start a job | `POST jobs/{job}/build`, `Content-Type: text/plain`, body `{}` or the parameter YAML | plain text `jobs/<id>/builds/<n>` |
+| Parameter definitions | `GET jobs/{job}/params` | YAML |
+| Build status | `GET jobs/{job}/builds/{n}/status` | plain text, e.g. `SUCCESSFUL` |
+
+Auth is HTTP Basic (a VB Studio user and password) or
+`Authorization: Bearer <personal access token>`. There is no deploy endpoint —
+a deploy is a job or pipeline you start like any other.
+
+## Standalone VBCS REST API
+
+Oracle publishes exactly 14 endpoints: application list/lock/unlock, the
+token endpoint, application- and tenant-level credential CRUD, and
+business-object data export/import. There is no whole-application
+export/import, version, build or deploy endpoint.
+
+Data import is `POST /ic/builder/{design|deployment}/{app}/{version}/resources/datamgr/import[/{objectId}]`
+with the file as the **raw request body** (`Content-Type: text/csv` or
+`application/zip`; `.xls`/`.xlsx` also accepted for a single object) — not
+multipart. The file name must equal the object id. `?append=true` adds rows;
+the default replaces the object's existing data. Export is the matching `GET`
+returning CSV (one object) or a ZIP of CSVs (all). Lock a live application
+before either.
+
 ## Common gotchas
+
+- **Personal access tokens expire.** A git or API call that used to work and
+  now returns 401 is almost always an expired or revoked token.
 
 - **The `gitRemoteRepo` field from the standalone-VBCS REST API's app listing
   is not a reliable source of the canonical git host.** It just records

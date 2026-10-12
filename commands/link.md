@@ -1,6 +1,6 @@
 ---
 description: Guided setup — link a VB Studio project repo checkout
-allowed-tools: mcp__vbcs__list_repos, mcp__vbcs__list_apps, mcp__vbcs__git_clone
+allowed-tools: mcp__vbcs__list_repos, mcp__vbcs__list_apps, mcp__vbcs__git_clone, mcp__vbcs__doctor
 ---
 Guide the user through linking a VB Studio (VBS) project — a git-backed VBCS app where pages/flows/chains live as files in a git repo — so the rest of the toolkit knows what to work against.
 
@@ -16,8 +16,8 @@ Guide the user through linking a VB Studio (VBS) project — a git-backed VBCS a
 
 4. Once workspace discovery works: ask whether the user already has a local checkout of the VB Studio project they want to work on, or needs one cloned.
    - Already checked out, but not under the configured workspace folder: tell them to move/re-clone it under the workspace directory (or set `VBCS_REPO_PATH` via plugin config to point at it directly for a single-repo setup), then confirm with `list_repos`.
-   - Needs cloning: ask for the git remote URL and a short destination folder name, then call `git_clone` (mcp__vbcs__git_clone) with those. Report the resulting path. Mention that git credentials for the remote (username/token, or an SSH key) need to already be set up through the user's normal git credential manager — this tool doesn't handle git authentication itself.
+   - Needs cloning: ask for the git remote URL and a short destination folder name, then call `git_clone` (mcp__vbcs__git_clone) with those. Report the resulting path. Tell the user that for HTTPS remotes the easiest non-interactive setup is the plugin's "VB Studio git username" and "VB Studio git token" settings (the token is stored in their system keychain; never ask them to paste it here). Without those, git falls back to credentials already cached by their OS credential manager, and fails fast with a clear message rather than hanging if there are none.
 
 5. If the repo hosts more than one app (check via `list_apps` after cloning/pointing), ask which one they want as the default and tell them to set it via plugin config (`vbcs_app_name`) if they'd like to skip specifying it on every call — otherwise every `/vbs-*` command just takes the app name as an argument.
 
-6. Finish with a short summary of what's configured (workspace dir, repo(s) found, default app if set) and a suggested next step, e.g. `/vbs-list-apps <repo>` or `/vbs-read <repo> <path>`.
+6. Call `doctor` (mcp__vbcs__doctor) and summarize it: what's configured (workspace dir, repo(s) found, default app if set), what is still missing with its one-line fix, and a suggested next step, e.g. `/vbs-list-apps <repo>` or `/vbs-read <repo> <path>`.

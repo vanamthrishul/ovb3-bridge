@@ -1,6 +1,6 @@
 ---
 description: Guided setup — link a VB Studio project or a standalone VBCS instance
-allowed-tools: mcp__vbcs__list_repos, mcp__vbcs__git_clone, mcp__vbcs__vbcs_list_applications, Edit, Read
+allowed-tools: mcp__vbcs__list_repos, mcp__vbcs__git_clone, mcp__vbcs__vbcs_list_applications, mcp__vbcs__doctor, Edit, Read
 ---
 Guide the user through linking either a VB Studio (VBS) project or a standalone VBCS instance, so the rest of the toolkit knows what to work against. Ask, don't assume:
 
@@ -21,4 +21,4 @@ Guide the user through linking either a VB Studio (VBS) project or a standalone 
 
 4. Only ever use `Edit` to write non-secret fields (`VBS_WORKSPACE_DIR`, `VBCS_REPO_PATH`, `VBCS_APP_NAME`, `VBCS_BASE_URL`). Never write, ask for, or echo back any credential/secret field — those are always the user's to fill in directly in `.env`.
 
-5. Finish with a short summary of what's now configured and what (if anything) the user still needs to fill in themselves before it's fully working.
+5. Finish by calling `doctor` (mcp__vbcs__doctor) and summarizing it: what's now configured, and what (if anything) the user still needs to fill in themselves — with each item's one-line fix — before it's fully working.

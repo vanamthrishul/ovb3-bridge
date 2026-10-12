@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { resolveProjectRoot } from "./env.js";
+import { resolveEnvFile, resolveProjectRoot } from "./env.js";
 
 /**
  * Writes to the local .env file directly — the CLI equivalent of what
@@ -12,7 +12,7 @@ import { resolveProjectRoot } from "./env.js";
  */
 
 function envPath(): string {
-  return path.join(resolveProjectRoot(), ".env");
+  return resolveEnvFile();
 }
 
 /** Creates .env from .env.example if it doesn't exist yet. Returns the .env path and whether it was just created. */
@@ -21,6 +21,7 @@ export function ensureEnvFile(): { path: string; created: boolean } {
   if (fs.existsSync(target)) {
     return { path: target, created: false };
   }
+  fs.mkdirSync(path.dirname(target), { recursive: true });
   const example = path.join(resolveProjectRoot(), ".env.example");
   const seed = fs.existsSync(example) ? fs.readFileSync(example, "utf8") : "";
   fs.writeFileSync(target, seed, "utf8");

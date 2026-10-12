@@ -8,14 +8,50 @@ on:
 
 jobs:
   test:
+    name: test (${{ matrix.os }}, node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+
+  package:
+    name: package check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
-      - run: npm test
+      # Fails if the published tarball would be missing dist/, the bins, or ship stray files.
+      - name: Inspect the tarball npm would publish
+        run: |
+          npm pack --dry-run --json > pack.json
+          node -e "
+            const files = JSON.parse(require('fs').readFileSync('pack.json','utf8'))[0].files.map(f => f.path);
+            const need = ['dist/server.js','dist/cli.js','README.md','LICENSE','.env.example','package.json'];
+            const missing = need.filter(n => !files.includes(n));
+            const stray = files.filter(f => /^(src|tests|workspace|\.env$|CLAUDE\.md)/.test(f));
+            if (missing.length || stray.length) { console.error({ missing, stray }); process.exit(1); }
+            console.log('tarball ok:', files.length, 'files');
+          "
+      - name: Smoke-test the built MCP server
+        run: |
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' '{"jsonrpc":"2.0","method":"notifications/initialized"}' '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' | timeout 20 node dist/server.js 2>/dev/null | tee out.txt | grep -q '"doctor"'
+      - name: Validate the plugin manifest
+        run: npx -y @anthropic-ai/claude-code plugin validate . --strict
