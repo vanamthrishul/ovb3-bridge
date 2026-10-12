@@ -5,6 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- VB Studio CI calls: the git personal access token was being sent as a Basic
+  password, which the Builds API rejects (401) even though git accepts it. Found
+  by testing against a live instance; the git token is now used as a Bearer token,
+  and Oracle's `400 … no longer exists` for an unknown job gets a clear hint.
+
 ## [0.3.0] - 2026-10-12
 
 Hardening and completeness release: fixes real defects found in a full audit,
@@ -80,11 +89,6 @@ makes first-time setup self-diagnosing.
 - `vbstudio_list_projects` and `vbstudio_trigger_deploy` stubs. Oracle's
   published API has no project-listing or deploy endpoint (deploys are CI jobs —
   use `vbstudio_trigger_build`); they only ever threw "not implemented".
-
-### Notes
-
-- The VB Studio CI calls follow Oracle's published request shapes but have not
-  yet been exercised against a live instance (the available token had expired).
 
 ## [0.2.0] - 2026-09-08
 

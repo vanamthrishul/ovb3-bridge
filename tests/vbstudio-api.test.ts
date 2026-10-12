@@ -44,12 +44,13 @@ describe("vbstudio-api (Builds REST API)", () => {
     expect(await resolveBuildsBase()).toBe(BASE);
   });
 
-  it("chooses bearer over basic, and falls back to git credentials", () => {
+  it("prefers an API token, then API user/password, then the git token as a Bearer (never as Basic)", () => {
     expect(authHeader({ VBSTUDIO_API_TOKEN: "pat", VBSTUDIO_GIT_USERNAME: "u", VBSTUDIO_GIT_TOKEN: "t" })).toBe("Bearer pat");
-    expect(authHeader({ VBSTUDIO_GIT_USERNAME: "u", VBSTUDIO_GIT_TOKEN: "t" })).toBe(`Basic ${Buffer.from("u:t").toString("base64")}`);
     expect(authHeader({ VBSTUDIO_API_USERNAME: "a", VBSTUDIO_API_PASSWORD: "b", VBSTUDIO_GIT_USERNAME: "u", VBSTUDIO_GIT_TOKEN: "t" })).toBe(
       `Basic ${Buffer.from("a:b").toString("base64")}`
     );
+    // confirmed live: the VB Studio API rejects a PAT as a Basic password but accepts it as Bearer
+    expect(authHeader({ VBSTUDIO_GIT_USERNAME: "u", VBSTUDIO_GIT_TOKEN: "t" })).toBe("Bearer t");
     expect(() => authHeader({})).toThrow(/No VB Studio API credentials/);
   });
 

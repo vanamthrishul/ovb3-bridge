@@ -115,7 +115,7 @@ export async function runDoctor(params: { repoRoot?: string; live?: boolean } = 
     );
 
     // VB Studio CI API
-    const ciUser = set("VBSTUDIO_API_TOKEN") || ((set("VBSTUDIO_API_USERNAME") || set("VBSTUDIO_GIT_USERNAME")) && (set("VBSTUDIO_API_PASSWORD") || set("VBSTUDIO_GIT_TOKEN")));
+    const ciUser = set("VBSTUDIO_API_TOKEN") || set("VBSTUDIO_GIT_TOKEN") || (set("VBSTUDIO_API_USERNAME") && set("VBSTUDIO_API_PASSWORD"));
     let ciBase = "";
     try {
       ciBase = set("VBSTUDIO_API_BASE_URL") ? process.env.VBSTUDIO_API_BASE_URL! : process.env.VBSTUDIO_GIT_REMOTE_URL ? deriveBuildsBase(process.env.VBSTUDIO_GIT_REMOTE_URL) : "";

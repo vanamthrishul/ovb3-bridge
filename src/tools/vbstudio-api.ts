@@ -63,18 +63,22 @@ export async function resolveBuildsBase(repoRoot?: string): Promise<string> {
   return deriveBuildsBase(remote);
 }
 
-/** Bearer PAT if VBSTUDIO_API_TOKEN is set, else Basic with the API (or git) credentials. */
+/**
+ * Credential choice, in order: an explicit API token (Bearer), an explicit API
+ * username + password (Basic), then the git personal access token as a Bearer
+ * token. Confirmed live: this API accepts a PAT as a Bearer token but rejects
+ * the same PAT sent as a Basic password (401), even though git accepts it as Basic.
+ */
 export function authHeader(env: NodeJS.ProcessEnv = process.env): string {
   if (env.VBSTUDIO_API_TOKEN) return `Bearer ${env.VBSTUDIO_API_TOKEN}`;
-  const user = env.VBSTUDIO_API_USERNAME ?? env.VBSTUDIO_GIT_USERNAME;
-  const pass = env.VBSTUDIO_API_PASSWORD ?? env.VBSTUDIO_GIT_TOKEN;
-  if (!user || !pass) {
-    throw new VbStudioApiError(
-      "No VB Studio API credentials. Set VBSTUDIO_API_TOKEN (personal access token), or VBSTUDIO_API_USERNAME + VBSTUDIO_API_PASSWORD " +
-        "(these fall back to VBSTUDIO_GIT_USERNAME / VBSTUDIO_GIT_TOKEN)."
-    );
+  if (env.VBSTUDIO_API_USERNAME && env.VBSTUDIO_API_PASSWORD) {
+    return `Basic ${Buffer.from(`${env.VBSTUDIO_API_USERNAME}:${env.VBSTUDIO_API_PASSWORD}`).toString("base64")}`;
   }
-  return `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`;
+  if (env.VBSTUDIO_GIT_TOKEN) return `Bearer ${env.VBSTUDIO_GIT_TOKEN}`;
+  throw new VbStudioApiError(
+    "No VB Studio API credentials. Set VBSTUDIO_API_TOKEN (a personal access token), or VBSTUDIO_API_USERNAME + VBSTUDIO_API_PASSWORD. " +
+      "If neither is set, VBSTUDIO_GIT_TOKEN is used as the bearer token."
+  );
 }
 
 function assertJob(jobName: string): string {
@@ -91,7 +95,7 @@ async function builds(repoRoot: string | undefined, resource: string, init: Requ
   });
   const text = await res.text();
   if (!res.ok) {
-    const hint = res.status === 401 ? " — check VBSTUDIO_API_TOKEN, or VBSTUDIO_API_USERNAME/PASSWORD." : res.status === 404 ? " — check the job name and project." : "";
+    const hint = res.status === 401 ? " — check VBSTUDIO_API_TOKEN, or VBSTUDIO_API_USERNAME/PASSWORD." : res.status === 404 || res.status === 400 ? " — check the job name and project (Oracle answers 400 \"no longer exists\" for an unknown job)." : "";
     throw new VbStudioApiError(`VB Studio API ${resource} failed: ${res.status} ${res.statusText}${hint}\n${text.slice(0, 500)}`);
   }
   return text.trim();
