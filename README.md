@@ -79,7 +79,7 @@ config file (see below).
 |---|---|
 | Clone / pull / push over HTTPS | `VBSTUDIO_GIT_USERNAME` + `VBSTUDIO_GIT_TOKEN` (a VB Studio personal access token) |
 | `run_build` / `run_audit` on apps with web components (most) | `VB_BUILD_COMPONENT_EXCHANGE_URL` — in VB Studio under Tenant Settings → Component Exchange; a private exchange looks like `https://<vbs-host>/<org>/s/<org>_<project>/compcatalog/0.2.0` |
-| VB Studio CI jobs | `VBSTUDIO_API_TOKEN` (or it reuses the git username/token) |
+| VB Studio CI jobs | `VBSTUDIO_API_TOKEN` (or leave it blank and your `VBSTUDIO_GIT_TOKEN` is reused as the bearer token) |
 | Standalone VBCS | `VBCS_BASE_URL` (bare host, **no** `/ic/builder`), `VBCS_IDCS_USERNAME`, `VBCS_IDCS_PASSWORD` |
 
 Git credentials are sent as a scoped HTTP header — never put in URLs, logs or
