@@ -9,6 +9,10 @@ Please **do not open a public issue** for a security problem. Use GitHub's
 private reporting instead: the **Security** tab of this repository →
 **Report a vulnerability**.
 
+You can also email **thrishulkrishna3@gmail.com**. For anything involving
+credentials or a vulnerability, prefer the private GitHub report, and never put
+a real token or password in an email.
+
 Include what you found, how to reproduce it, and the version
 (`npm view ovb3-bridge version`, or the plugin version in `/plugin`). You'll get
 a reply as soon as practical; this is a one-person project, so please allow a

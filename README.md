@@ -205,6 +205,7 @@ Run **`doctor`** first. Beyond that:
 ## Contributing
 
 Issues and PRs welcome (all changes land through a reviewed pull request).
+Questions or feedback: open an issue, or email thrishulkrishna3@gmail.com.
 Please report security problems privately — see [`SECURITY.md`](SECURITY.md).
 `npm test` must pass; CI runs it on Linux, macOS and
 Windows. A packaging test keeps the two command folders, the version numbers
