@@ -89,7 +89,7 @@
     "vbstudio_api_token": {
       "type": "string",
       "title": "VB Studio API token (optional)",
-      "description": "Personal access token used as a bearer token for the VB Studio CI REST API. If blank, the git username/token above are tried as Basic auth.",
+      "description": "Personal access token used as a bearer token for the VB Studio CI REST API. If blank, the git token above is used as the bearer token.",
       "required": false,
       "sensitive": true
     }

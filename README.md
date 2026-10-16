@@ -175,6 +175,15 @@ build/audit output as it streams — so nothing happens silently.
 
 Run **`doctor`** first. Beyond that:
 
+- **`plugin:ovb3:vbcs` shows ✗ in `/mcp` right after install** — the first
+  launch downloads the package via `npx`, which can exceed Claude Code's 30s
+  connect limit on a slow or restricted network. Select the server in `/mcp` and
+  choose reconnect (it starts fast once the cache is warm), or run
+  `npx -y ovb3-bridge` once in a terminal first and press `Ctrl+C` after the
+  startup line.
+- **`doctor` in a plain terminal says everything is unset** — plugin config is
+  only injected when Claude Code launches the server. Run `/ovb3:vbs-doctor`
+  inside Claude Code to see the real picture.
 - **Git says "Authentication failed"** — your token is missing, wrong or expired
   (see credentials above). OVB3 never waits on a hidden prompt; it fails in
   seconds with this message.
