@@ -41,7 +41,7 @@ describe("build tool safety + diagnosis", () => {
 
   it("maps real, previously-observed failure output to a hint", () => {
     expect(diagnose("Fatal error: Missing mandatory component exchange URL")).toMatch(/Component Exchange URL/);
-    expect(diagnose("ComponentExchangeCCAFinder: Cannot load oj-dcs-x")).toMatch(/VB_BUILD_COMPONENT_EXCHANGE_URL/);
+    expect(diagnose("ComponentExchangeCCAFinder: Cannot load oj-example-x")).toMatch(/VB_BUILD_COMPONENT_EXCHANGE_URL/);
     expect(diagnose("AuthenticationSystems: Backend fetch failed. status: 'ETIMEDOUT'")).toMatch(/live Visual Builder backend/);
     expect(diagnose("Error: Cannot find module 'x'")).toMatch(/setup_build_tools/);
     expect(diagnose("all good")).toBeUndefined();

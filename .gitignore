@@ -15,13 +15,11 @@ dist/
 # local-only permission grants; .claude/commands/ IS committed (shared slash commands)
 .claude/settings.local.json
 
-# local-only session log/build-brief for Claude Code — not public-facing docs,
-# accumulates internal history (hostnames, incidents, etc). Kept on disk, not shipped.
+# local-only notes for Claude Code sessions; not public-facing docs.
 CLAUDE.md
 
-# local-only backup of pre-squash git history (real hostname, old CLAUDE.md
-# content) — deliberately never committed, see CLAUDE.md history-rewrite entry.
+# local-only backups; deliberately never committed.
 /.git-history-backup/
 
-# local-only reference material for Claude Code, not for the repo/public
+# local-only reference material; not for the repo
 /JUST FOR REFRANCE/
