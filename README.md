@@ -14,6 +14,12 @@ than scripting the design-time browser UI, which has no public API and breaks
 whenever Oracle updates it. See [`docs/VBS-GUIDE.md`](docs/VBS-GUIDE.md) for the
 confirmed repo layout and build behavior this is built against.
 
+> **Unofficial community project.** Not affiliated with, endorsed by, or
+> supported by Oracle. "Oracle", "Visual Builder" and related names are
+> trademarks of Oracle and are used only to say what this tool works with.
+> It is early software: review what Claude changes before you push, and try it
+> on a non-production project first.
+
 Nothing is tied to one project: an instance hosts many VB Studio projects (git
 repos), each holding many apps under `webApps/`, and every tool takes the repo
 and app as arguments.
@@ -198,7 +204,9 @@ Run **`doctor`** first. Beyond that:
 
 ## Contributing
 
-Issues and PRs welcome. `npm test` must pass; CI runs it on Linux, macOS and
+Issues and PRs welcome (all changes land through a reviewed pull request).
+Please report security problems privately — see [`SECURITY.md`](SECURITY.md).
+`npm test` must pass; CI runs it on Linux, macOS and
 Windows. A packaging test keeps the two command folders, the version numbers
 and `.env.example` in sync with the code.
 
