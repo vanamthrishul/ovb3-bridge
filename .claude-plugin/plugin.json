@@ -21,7 +21,7 @@
     "vbs_workspace_dir": {
       "type": "directory",
       "title": "VBS workspace directory",
-      "description": "A local folder that holds (or will hold) git checkouts of your VB Studio project repos. list_repos/list_apps discover what's under here.",
+      "description": "A local folder that holds (or will hold) git checkouts of your VB Studio project repos. list_repos/list_apps discover what's under here. Created automatically on the first clone if it doesn't exist.",
       "required": true
     },
     "vbcs_repo_path": {

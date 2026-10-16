@@ -4,7 +4,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { withLogging } from "../lib/logger.js";
 import { resolveEnvFile } from "../lib/env.js";
-import { listApps, listRepos, resolveWorkspaceDir } from "../lib/vbcs-repo.js";
+import { configuredWorkspaceDir, listApps, listRepos, resolveWorkspaceDir } from "../lib/vbcs-repo.js";
 import { deriveBuildsBase } from "./vbstudio-api.js";
 import { listApplications } from "./vbcs-api.js";
 
@@ -57,9 +57,12 @@ export async function runDoctor(params: { repoRoot?: string; live?: boolean } = 
     // Workspace + repos
     let repos: string[] = [];
     try {
-      const workspace = resolveWorkspaceDir();
-      if (!workspace) {
+      const configured = configuredWorkspaceDir();
+      const workspace = configured && fs.existsSync(configured) ? resolveWorkspaceDir() : undefined;
+      if (!configured) {
         add({ name: "VBS workspace", status: "warn", detail: "VBS_WORKSPACE_DIR not set", fix: "Set VBS_WORKSPACE_DIR to a folder for your repo checkouts (run `ovb3 init` or /link)." });
+      } else if (!workspace) {
+        add({ name: "VBS workspace", status: "warn", detail: `${configured} doesn't exist yet — it will be created on the first git_clone`, fix: "Nothing to do, or create the folder yourself." });
       } else {
         repos = listRepos();
         add({ name: "VBS workspace", status: "ok", detail: `${workspace} — ${repos.length} repo checkout(s): ${repos.join(", ") || "none yet"}` });

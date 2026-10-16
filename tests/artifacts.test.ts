@@ -57,6 +57,17 @@ describe("artifacts tools", () => {
     expect(listApps(repoRoot)).toEqual(["sampleApp"]);
   });
 
+  it("lists no repos (no error) when VBS_WORKSPACE_DIR points at a folder that doesn't exist yet", () => {
+    const original = process.env.VBS_WORKSPACE_DIR;
+    process.env.VBS_WORKSPACE_DIR = path.join(os.tmpdir(), "ovb3-definitely-missing-workspace");
+    try {
+      expect(listRepos()).toEqual([]);
+    } finally {
+      if (original === undefined) delete process.env.VBS_WORKSPACE_DIR;
+      else process.env.VBS_WORKSPACE_DIR = original;
+    }
+  });
+
   it("lists no repos when VBS_WORKSPACE_DIR is unset", () => {
     const original = process.env.VBS_WORKSPACE_DIR;
     delete process.env.VBS_WORKSPACE_DIR;

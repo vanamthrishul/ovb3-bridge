@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- A `VBS_WORKSPACE_DIR` that doesn't exist yet is no longer an error: `git_clone`
+  creates it on first use, `list_repos` returns an empty list, and `doctor`
+  reports a warning ("will be created on the first git_clone") instead of a
+  failure. Found while testing the plugin install on a fresh machine.
+
+### Changed
+
+- First-run notes in the README troubleshooting section: the `/mcp` connect
+  timeout caused by the cold `npx` download, and why `doctor` in a plain
+  terminal can't see plugin config.
+- The `vbstudio_api_token` plugin field description now says the git token is
+  used as the bearer token (it still said "Basic auth").
+
 ## [0.3.1] - 2026-10-12
 
 ### Fixed

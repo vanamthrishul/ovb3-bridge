@@ -48,6 +48,14 @@ describe("gitClone", () => {
     expect(onDisk).toBe("{}");
   });
 
+  it("creates a missing VBS_WORKSPACE_DIR on first clone", async () => {
+    const missing = path.join(workspaceDir, "not", "yet", "there");
+    process.env.VBS_WORKSPACE_DIR = missing;
+    const result = await gitClone(remoteDir, "cloned-repo");
+    expect(result.path).toBe(path.join(missing, "cloned-repo"));
+    await expect(fs.stat(path.join(result.path, ".git"))).resolves.toBeTruthy();
+  });
+
   it("throws VbcsRepoError when VBS_WORKSPACE_DIR is unset", async () => {
     delete process.env.VBS_WORKSPACE_DIR;
     await expect(gitClone(remoteDir, "cloned-repo")).rejects.toThrow(VbcsRepoError);

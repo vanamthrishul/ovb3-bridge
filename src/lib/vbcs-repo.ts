@@ -34,6 +34,11 @@ export class VbcsRepoError extends Error {}
  * discovery (listRepos) and as the base when a repo is given by name rather
  * than absolute path.
  */
+export function configuredWorkspaceDir(): string | undefined {
+  const dir = process.env.VBS_WORKSPACE_DIR;
+  return dir ? path.resolve(dir) : undefined;
+}
+
 export function resolveWorkspaceDir(): string | undefined {
   const dir = process.env.VBS_WORKSPACE_DIR;
   if (!dir) return undefined;
@@ -91,6 +96,10 @@ function assertDir(resolved: string, message: string): string {
  * API is confirmed against a live instance.
  */
 export function listRepos(): string[] {
+  // A configured-but-not-yet-created workspace simply has no checkouts yet
+  // (git_clone creates it on first use), so don't treat it as an error.
+  const configured = configuredWorkspaceDir();
+  if (configured && !fs.existsSync(configured)) return [];
   const workspace = resolveWorkspaceDir();
   if (!workspace) return [];
   return fs

@@ -1,7 +1,8 @@
+import fs from "node:fs";
 import path from "node:path";
 import { simpleGit, type SimpleGit, type StatusResult } from "simple-git";
 import { withLogging } from "../lib/logger.js";
-import { resolveWorkspaceDir, VbcsRepoError } from "../lib/vbcs-repo.js";
+import { configuredWorkspaceDir, VbcsRepoError } from "../lib/vbcs-repo.js";
 
 const DEFAULT_GIT_TIMEOUT_MS = 120_000;
 
@@ -113,10 +114,14 @@ function explainGitError(err: unknown): Error {
  */
 export async function gitClone(remoteUrl: string, destName: string): Promise<{ path: string }> {
   return withLogging("gitClone", { remoteUrl, destName }, async () => {
-    const workspace = resolveWorkspaceDir();
+    const workspace = configuredWorkspaceDir();
     if (!workspace) {
       throw new VbcsRepoError("VBS_WORKSPACE_DIR is not set — set it before cloning a repo into the workspace.");
     }
+    if (fs.existsSync(workspace) && !fs.statSync(workspace).isDirectory()) {
+      throw new VbcsRepoError(`VBS_WORKSPACE_DIR is not a directory: ${workspace}`);
+    }
+    fs.mkdirSync(workspace, { recursive: true });
     if (!/^[\w][\w.-]*$/.test(destName)) {
       throw new VbcsRepoError(`Invalid destName "${destName}" — use a plain folder name (letters, digits, '.', '_', '-').`);
     }
