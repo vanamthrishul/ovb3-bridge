@@ -2,7 +2,7 @@
 
 Confirmed facts about how git-backed Visual Builder Studio (VBS) projects are
 actually laid out and built, gathered by directly inspecting real project
-checkouts and Oracle's own installed build tooling — not from guessing at
+checkouts and Oracle's own installed build tooling, not from guessing at
 Oracle's docs. Nothing here is specific to any one project; it's the same for
 any VBS-backed VBCS app.
 
@@ -17,7 +17,7 @@ some are per-app:
   visual-application.json     # project-wide, one per repo
   services/<name>/
     openapi3.json
-    catalog.json               # project-wide — shared by every app in the repo
+    catalog.json               # project-wide, shared by every app in the repo
   settings/                    # project-wide
     dependencies.json
     deployment-profiles.json
@@ -35,7 +35,7 @@ some are per-app:
 ```
 
 The easy mistake: assuming `services/`, `settings/`, and
-`visual-application.json` live under `webApps/<app>/`. They don't — they're
+`visual-application.json` live under `webApps/<app>/`. They don't; they're
 one level up, at the repo root, because a repo can hold more than one app
 sharing the same backend services.
 
@@ -60,21 +60,21 @@ not walking JSON.
 ## grunt-vb-build / grunt-vb-audit
 
 Oracle's own build/audit tasks, installed into a VBS repo checkout from a
-private Oracle CDN feed (not public npm) — confirmed by reading the installed
+private Oracle CDN feed (not public npm), confirmed by reading the installed
 package source directly, not assumed from docs:
 
 - Task names: **`vb-build`** and **`vb-audit`** (`grunt.registerTask('vb-build', ...)` /
   `i.registerTask("vb-audit", ...)` in the installed packages).
 - Target a specific app with `--app=<name>`.
 - Both need `--url:ce=<Component Exchange URL>` for any app using shared or
-  custom components — which is the normal case, not an edge case. Without it,
+  custom components, which is the normal case, not an edge case. Without it,
   `vb-build` fails outright (`Fatal error: Missing mandatory component
   exchange URL`) and `vb-audit` logs a `ComponentExchangeCCAFinder: Cannot
-  load` error per component. This URL is org-specific — there's no default to
+  load` error per component. This URL is org-specific; there's no default to
   fall back to; you have to know your own org's Component Exchange endpoint.
 - `vb-audit` additionally needs live network/auth connectivity to a VB Studio
   backend/tenant service to fetch `vb.services.catalog.json`. If that's not
-  reachable you'll see `Backend fetch failed... status: 'ETIMEDOUT'` — this is
+  reachable you'll see `Backend fetch failed... status: 'ETIMEDOUT'`. This is
   a separate requirement from the Component Exchange URL, and isn't something
   a CLI flag can work around.
 
@@ -103,7 +103,7 @@ the base can be derived from any repo's `origin`.
 | Build status | `GET jobs/{job}/builds/{n}/status` | plain text, e.g. `SUCCESSFUL` |
 
 Auth is HTTP Basic (a VB Studio user and password) or
-`Authorization: Bearer <personal access token>`. There is no deploy endpoint —
+`Authorization: Bearer <personal access token>`. There is no deploy endpoint;
 a deploy is a job or pipeline you start like any other.
 
 ## Standalone VBCS REST API
@@ -115,7 +115,7 @@ export/import, version, build or deploy endpoint.
 
 Data import is `POST /ic/builder/{design|deployment}/{app}/{version}/resources/datamgr/import[/{objectId}]`
 with the file as the **raw request body** (`Content-Type: text/csv` or
-`application/zip`; `.xls`/`.xlsx` also accepted for a single object) — not
+`application/zip`; `.xls`/`.xlsx` also accepted for a single object), not
 multipart. The file name must equal the object id. `?append=true` adds rows;
 the default replaces the object's existing data. Export is the matching `GET`
 returning CSV (one object) or a ZIP of CSVs (all). Lock a live application
@@ -136,6 +136,6 @@ before either.
   redirect, not the instance URL.** The real host is recoverable from that
   URL's `idcs_app_resource_url` query parameter.
 - **The standalone-VBCS REST base URL must be the bare host**, e.g.
-  `https://vbcs-<tenant>-<env>.builder.<region>.ocp.oraclecloud.com` —
+  `https://vbcs-<tenant>-<env>.builder.<region>.ocp.oraclecloud.com`,
   without a trailing `/ic/builder/`. Tooling that calls the REST API appends
   that path itself; including it in the base URL double-prefixes every call.
