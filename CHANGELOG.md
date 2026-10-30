@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.3] - 2026-10-30
+
+### Changed
+
+- Slash commands: reworded the first body line of 14 commands (`Arguments from the user: $ARGUMENTS`) in an attempt to fix the slash-command picker showing it instead of the description.
+- Replaced em dashes with plain punctuation across docs, manifests, command text, runtime messages and code comments.
+
 ## [0.3.2] - 2026-10-16
 
 ### Fixed

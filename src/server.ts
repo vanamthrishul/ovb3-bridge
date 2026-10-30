@@ -17,7 +17,7 @@ import * as vbstudioApi from "./tools/vbstudio-api.js";
 import * as vbcsApi from "./tools/vbcs-api.js";
 import { runDoctor } from "./tools/doctor.js";
 
-const server = new McpServer({ name: "ovb3-bridge", version: "0.3.2" });
+const server = new McpServer({ name: "ovb3-bridge", version: "0.3.3" });
 
 const repoParam = z
   .string()
@@ -360,7 +360,7 @@ server.registerTool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  logAction("ovb3-bridge MCP server started", { version: "0.3.2" });
+  logAction("ovb3-bridge MCP server started", { version: "0.3.3" });
 }
 
 main().catch((err) => {
