@@ -1,7 +1,7 @@
 {
   "name": "ovb3-bridge",
   "version": "0.3.2",
-  "description": "OVB3 (Oracle Visual Builder Bridge) — MCP server + CLI + Claude Code plugin for driving Oracle Visual Builder Studio (VBS) / VBCS app development from Claude: read, search and edit artifacts, audit service calls across apps, git, Oracle's build/audit tasks, VB Studio CI jobs, and standalone-VBCS data export/import.",
+  "description": "OVB3 (Oracle Visual Builder Bridge): MCP server + CLI + Claude Code plugin for driving Oracle Visual Builder Studio (VBS) / VBCS app development from Claude: read, search and edit artifacts, audit service calls across apps, git, Oracle's build/audit tasks, VB Studio CI jobs, and standalone-VBCS data export/import.",
   "type": "module",
   "license": "MIT",
   "keywords": [

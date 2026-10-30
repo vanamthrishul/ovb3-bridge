@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 
 /**
- * Package root by file location, not process.cwd() — MCP hosts (Claude Code,
+ * Package root by file location, not process.cwd() - MCP hosts (Claude Code,
  * etc) can launch this server from an arbitrary working directory, so
  * relying on cwd would silently drop all config.
  */
@@ -42,7 +42,7 @@ const UNEXPANDED_PLACEHOLDER = /^\$\{[^}]*\}$/;
 
 /**
  * Host-provided placeholders that arrive empty ("") or unexpanded
- * ("${user_config.x}") mean "not configured" — drop them so a real value from
+ * ("${user_config.x}") mean "not configured" - drop them so a real value from
  * .env can still apply (dotenv never overrides a variable that is already set).
  */
 export function dropUnsetPlaceholders(env: NodeJS.ProcessEnv = process.env): void {

@@ -2,7 +2,7 @@ import { simpleGit } from "simple-git";
 import { withLogging } from "../lib/logger.js";
 
 /**
- * VB Studio's own hosted CI REST API (the "Builds API") — NOT the same thing
+ * VB Studio's own hosted CI REST API (the "Builds API") - NOT the same thing
  * as the grunt-vb-build/grunt-vb-audit tasks in build.ts, which run locally.
  * This one starts and monitors jobs in VB Studio's CI service over HTTP.
  *
@@ -17,7 +17,7 @@ import { withLogging } from "../lib/logger.js";
  *   https://docs.oracle.com/en/cloud/paas/visual-builder/visualbuilder-rest-apis/submit-build.html
  *
  * Deliberately NOT implemented: project/repository/environment listing and a
- * "deploy" call. Oracle's published Builds API has no such endpoints — in VB
+ * "deploy" call. Oracle's published Builds API has no such endpoints - in VB
  * Studio, deploys are just jobs or pipelines, so use triggerBuild on the
  * deploy job. Pipeline endpoints exist but their request shapes weren't
  * retrievable from the docs, so they're left out rather than guessed.
@@ -39,7 +39,7 @@ export function deriveBuildsBase(remoteUrl: string): string {
   try {
     url = new URL(remoteUrl);
   } catch {
-    throw new VbStudioApiError(`Can't derive a VB Studio API base from "${remoteUrl}" — not an http(s) URL.`);
+    throw new VbStudioApiError(`Can't derive a VB Studio API base from "${remoteUrl}" - not an http(s) URL.`);
   }
   const match = url.pathname.match(/^\/([^/]+)\/s\/([^/]+)\/(?:scm|maven)\//);
   if (!match) {
@@ -95,7 +95,7 @@ async function builds(repoRoot: string | undefined, resource: string, init: Requ
   });
   const text = await res.text();
   if (!res.ok) {
-    const hint = res.status === 401 ? " — check VBSTUDIO_API_TOKEN, or VBSTUDIO_API_USERNAME/PASSWORD." : res.status === 404 || res.status === 400 ? " — check the job name and project (Oracle answers 400 \"no longer exists\" for an unknown job)." : "";
+    const hint = res.status === 401 ? " - check VBSTUDIO_API_TOKEN, or VBSTUDIO_API_USERNAME/PASSWORD." : res.status === 404 || res.status === 400 ? " - check the job name and project (Oracle answers 400 \"no longer exists\" for an unknown job)." : "";
     throw new VbStudioApiError(`VB Studio API ${resource} failed: ${res.status} ${res.statusText}${hint}\n${text.slice(0, 500)}`);
   }
   return text.trim();

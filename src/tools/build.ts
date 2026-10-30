@@ -125,7 +125,7 @@ export function diagnose(output: string, timedOut = false): string | undefined {
     );
   }
   if (/Cannot find module|MODULE_NOT_FOUND/i.test(output)) {
-    return "Build dependencies look incomplete — run setup_build_tools for this repo (npm install), then retry.";
+    return "Build dependencies look incomplete - run setup_build_tools for this repo (npm install), then retry.";
   }
   return undefined;
 }
@@ -133,17 +133,17 @@ export function diagnose(output: string, timedOut = false): string | undefined {
 const SAFE_APP = /^[A-Za-z0-9_.-]+$/;
 const SAFE_URL = /^https?:\/\/[A-Za-z0-9._~:/?=%@+-]+$/;
 
-/** Rejects anything that isn't a plain app name — it ends up as a CLI argument. */
+/** Rejects anything that isn't a plain app name - it ends up as a CLI argument. */
 export function assertSafeAppName(appName: string): string {
   if (!SAFE_APP.test(appName)) {
-    throw new BuildToolError(`Invalid app name "${appName}" — expected letters, digits, '.', '_' or '-'.`);
+    throw new BuildToolError(`Invalid app name "${appName}" - expected letters, digits, '.', '_' or '-'.`);
   }
   return appName;
 }
 
 /**
  * Component Exchange flags shared by vb-build and vb-audit. `url:ce` is only
- * needed when an app references Web Components, per Oracle's docs — but that's
+ * needed when an app references Web Components, per Oracle's docs - but that's
  * the normal case. Org-specific, so never hardcoded: read from env and omitted
  * entirely when unset, so behaviour degrades to Oracle's own clear error
  * (which diagnose() then explains) rather than us guessing a URL.
@@ -154,7 +154,7 @@ export function componentExchangeArgs(env: NodeJS.ProcessEnv = process.env): str
   if (url) {
     if (!SAFE_URL.test(url)) {
       throw new BuildToolError(
-        "VB_BUILD_COMPONENT_EXCHANGE_URL doesn't look like a plain http(s) URL (unexpected characters) — check the value."
+        "VB_BUILD_COMPONENT_EXCHANGE_URL doesn't look like a plain http(s) URL (unexpected characters) - check the value."
       );
     }
     args.push(`--url:ce=${url}`);
@@ -177,7 +177,7 @@ export function findGruntBin(repoRoot: string): string {
   if (!found) {
     throw new BuildToolError(
       `Build tools aren't installed in ${repoRoot} (no node_modules/grunt-cli). ` +
-        `Run the setup_build_tools tool (or 'npm install' in that repo) first — VB Studio projects pin ` +
+        `Run the setup_build_tools tool (or 'npm install' in that repo) first - VB Studio projects pin ` +
         `@oracle/grunt-vb-build and @oracle/grunt-vb-audit in their own package.json, so this needs no extra config.`
     );
   }
@@ -204,7 +204,7 @@ export async function runBuild(repoRoot: string, appName?: string): Promise<Comm
 /**
  * Runs Oracle's grunt-vb-audit task (registerTask("vb-audit", ...)). Beyond
  * the Component Exchange URL it needs live network access to a Visual Builder
- * backend to fetch vb.services.catalog.json — see diagnose().
+ * backend to fetch vb.services.catalog.json - see diagnose().
  */
 export async function runAudit(repoRoot: string, appName?: string): Promise<CommandResult> {
   return runGrunt("vb-audit", repoRoot, appName);
@@ -214,13 +214,13 @@ export async function runAudit(repoRoot: string, appName?: string): Promise<Comm
  * Installs the repo's own build dependencies (`npm install`). VB Studio
  * projects pin the Oracle CDN tarballs for grunt-vb-build / grunt-vb-audit in
  * their package.json, so no registry config is needed. The command is a fixed
- * string (no user input), so running it through the shell is safe — and
+ * string (no user input), so running it through the shell is safe - and
  * required on Windows, where npm is a .cmd shim.
  */
 export async function setupBuildTools(repoRoot: string): Promise<CommandResult> {
   return withLogging("setupBuildTools", { repoRoot }, async () => {
     if (!fs.existsSync(path.join(repoRoot, "package.json"))) {
-      throw new BuildToolError(`No package.json in ${repoRoot} — this doesn't look like a VB Studio project checkout.`);
+      throw new BuildToolError(`No package.json in ${repoRoot} - this doesn't look like a VB Studio project checkout.`);
     }
     return runStreamed("npm", ["install", "--no-fund", "--no-audit"], repoRoot, "setupBuildTools", { shell: true });
   });

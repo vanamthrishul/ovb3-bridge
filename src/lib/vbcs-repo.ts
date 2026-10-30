@@ -14,7 +14,7 @@ import fs from "node:fs";
  *       settings/                # app-scoped: build.json, appShellCache.json, dependencies.json
  *
  * Earlier drafts of this helper assumed services/settings/visual-application.json
- * lived under webApps/<app>/ — that was wrong. A VB Studio project repo can
+ * lived under webApps/<app>/ - that was wrong. A VB Studio project repo can
  * back multiple web/mobile apps that share one set of backend services, so
  * those are project-root scoped, not per-app.
  *
@@ -91,7 +91,7 @@ function assertDir(resolved: string, message: string): string {
 
 /**
  * Lists local project repo checkouts under VBS_WORKSPACE_DIR (any directory
- * containing a .git folder). This is local-filesystem discovery only — full
+ * containing a .git folder). This is local-filesystem discovery only - full
  * instance-level project discovery belongs in vbstudio-api.ts once the REST
  * API is confirmed against a live instance.
  */
@@ -170,12 +170,12 @@ export function appSettingsDir(repoRoot: string, appName: string): string {
   return path.join(webAppDir(repoRoot, appName), "settings");
 }
 
-/** Project-wide: services/<name>/, shared by every app in the repo — not nested under webApps/<app>/. */
+/** Project-wide: services/<name>/, shared by every app in the repo - not nested under webApps/<app>/. */
 export function servicesDir(repoRoot: string): string {
   return resolveArtifactPath(repoRoot, "services");
 }
 
-/** Project-wide: dependencies.json, deployment-profiles.json, user-roles.json — one per repo. */
+/** Project-wide: dependencies.json, deployment-profiles.json, user-roles.json - one per repo. */
 export function settingsDir(repoRoot: string): string {
   return resolveArtifactPath(repoRoot, "settings");
 }

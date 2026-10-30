@@ -200,7 +200,7 @@ server.registerTool(
 server.registerTool(
   "git_clone",
   {
-    description: "Clone a git remote into VBS_WORKSPACE_DIR so it's discoverable by list_repos. Used by /link's VBS setup flow. Do not embed credentials in remoteUrl — set VBSTUDIO_GIT_USERNAME/TOKEN instead.",
+    description: "Clone a git remote into VBS_WORKSPACE_DIR so it's discoverable by list_repos. Used by /link's VBS setup flow. Do not embed credentials in remoteUrl - set VBSTUDIO_GIT_USERNAME/TOKEN instead.",
     inputSchema: z.object({
       remoteUrl: z.string().describe("Git remote URL to clone"),
       destName: z.string().describe("Destination folder name under VBS_WORKSPACE_DIR"),

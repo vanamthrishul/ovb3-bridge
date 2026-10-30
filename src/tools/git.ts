@@ -15,7 +15,7 @@ function timeoutMs(): number {
  * Builds the `http.<origin>/.extraHeader` config that authenticates git over
  * HTTPS with VBSTUDIO_GIT_USERNAME / VBSTUDIO_GIT_TOKEN. Sent as a scoped
  * header rather than embedded in the remote URL so the secret never lands in
- * .git/config, `git remote -v`, process listings, or logs — and scoped to the
+ * .git/config, `git remote -v`, process listings, or logs - and scoped to the
  * remote's own origin so it is never sent to a redirect target on another host.
  * Returns [] when no token is configured or the remote isn't http(s) (e.g. ssh).
  */
@@ -44,9 +44,9 @@ function identityConfig(): string[] {
 
 /**
  * Environment for git children. Inherits everything EXCEPT git's programmable
- * hooks — GIT_ASKPASS / SSH_ASKPASS (set by editors like VS Code; the exact
+ * hooks - GIT_ASKPASS / SSH_ASKPASS (set by editors like VS Code; the exact
  * mechanism that pops an invisible prompt and hangs a headless run),
- * GIT_EDITOR, GIT_PAGER, GIT_SSH_COMMAND, GIT_EXTERNAL_DIFF, EDITOR, PAGER, … —
+ * GIT_EDITOR, GIT_PAGER, GIT_SSH_COMMAND, GIT_EXTERNAL_DIFF, EDITOR, PAGER, ...,
  * which are also what simple-git refuses to run with. Only GIT_* variables
  * that matter for proxies/TLS (GIT_SSL_*, GIT_HTTP_*, GIT_CURL_*) and tracing
  * are kept. Terminal and credential-manager prompts are switched off.
@@ -94,7 +94,7 @@ function explainGitError(err: unknown): Error {
   if (/terminal prompts disabled|could not read (username|password)|authentication failed|HTTP 401|403/i.test(message)) {
     return new Error(
       `${message}\n\nGit needs credentials for this remote. Set VBSTUDIO_GIT_USERNAME and VBSTUDIO_GIT_TOKEN ` +
-        `(a VB Studio personal access token) in .env / plugin config — if they are already set, the token has likely ` +
+        `(a VB Studio personal access token) in .env / plugin config - if they are already set, the token has likely ` +
         `expired or been revoked, so generate a new one. Or authenticate once in a normal terminal so your OS credential manager caches them.`
     );
   }
@@ -116,14 +116,14 @@ export async function gitClone(remoteUrl: string, destName: string): Promise<{ p
   return withLogging("gitClone", { remoteUrl, destName }, async () => {
     const workspace = configuredWorkspaceDir();
     if (!workspace) {
-      throw new VbcsRepoError("VBS_WORKSPACE_DIR is not set — set it before cloning a repo into the workspace.");
+      throw new VbcsRepoError("VBS_WORKSPACE_DIR is not set - set it before cloning a repo into the workspace.");
     }
     if (fs.existsSync(workspace) && !fs.statSync(workspace).isDirectory()) {
       throw new VbcsRepoError(`VBS_WORKSPACE_DIR is not a directory: ${workspace}`);
     }
     fs.mkdirSync(workspace, { recursive: true });
     if (!/^[\w][\w.-]*$/.test(destName)) {
-      throw new VbcsRepoError(`Invalid destName "${destName}" — use a plain folder name (letters, digits, '.', '_', '-').`);
+      throw new VbcsRepoError(`Invalid destName "${destName}" - use a plain folder name (letters, digits, '.', '_', '-').`);
     }
     const destPath = path.join(workspace, destName);
     try {

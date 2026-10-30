@@ -1,6 +1,6 @@
 /**
  * Every tool action is logged here so the user can see what the toolkit is
- * doing in real time — which artifact was read/written, what git/build
+ * doing in real time - which artifact was read/written, what git/build
  * command ran, etc. Always writes to stderr: when the MCP server is running
  * over stdio, stdout is reserved for JSON-RPC protocol frames, so stderr is
  * the only safe channel (Claude Code / MCP hosts surface server stderr in

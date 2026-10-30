@@ -15,7 +15,7 @@ import { runDoctor } from "./tools/doctor.js";
 import { runInit } from "./cli-init.js";
 
 /**
- * Thin CLI over the same tool functions the MCP server exposes — lets you
+ * Thin CLI over the same tool functions the MCP server exposes - lets you
  * exercise artifact/git/build operations by hand without going through an
  * MCP host. Every action is already logged to stderr by the tool layer;
  * this just prints the return value to stdout.
@@ -25,7 +25,7 @@ function usage(exitCode = 1): never {
   console.log(`ovb3 <command> [args]
 
 Setup
-  init                                   Guided setup — link a VB Studio project or standalone VBCS instance
+  init                                   Guided setup - link a VB Studio project or standalone VBCS instance
   doctor [--live]                        Check your install and tell me exactly what's missing (--live also tests the VBCS login)
 
 VB Studio project (git-backed)
@@ -195,7 +195,7 @@ async function main(): Promise<void> {
     case "vbcs-import-data": {
       const mode = need(args[3], "append|replace");
       if (mode !== "append" && mode !== "replace") {
-        console.error(`Mode must be "append" or "replace" (got "${mode}") — replace overwrites existing data.\n`);
+        console.error(`Mode must be "append" or "replace" (got "${mode}") - replace overwrites existing data.\n`);
         usage();
       }
       result = await vbcsApi.importBusinessObjectData({

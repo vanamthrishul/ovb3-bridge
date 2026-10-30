@@ -68,8 +68,8 @@ export interface ServiceCall {
 
 /**
  * Index of the bracket matching the opener at `start`, skipping strings,
- * template literals and comments. Not a JS parser — it doesn't understand
- * regex literals containing brackets — but VBCS action-chain call sites are
+ * template literals and comments. Not a JS parser - it doesn't understand
+ * regex literals containing brackets - but VBCS action-chain call sites are
  * plain object literals, which this handles exactly.
  */
 export function matchBracket(src: string, start: number): number {
@@ -208,7 +208,7 @@ export interface ServiceCallAudit {
  * Cross-app comparative audit of REST service usage. Walks every action-chain
  * JS file under webApps/<app>/, extracts each Actions.callRest call, and for
  * each endpoint compares which parameter KEYS (uriParams / body / headers…)
- * each app passes — flagging keys some apps send that others omit. Compares
+ * each app passes - flagging keys some apps send that others omit. Compares
  * key sets, not values: values are arbitrary expressions and not comparable.
  */
 export async function auditServiceCalls(

@@ -30,7 +30,7 @@ const set = (name: string) => Boolean(process.env[name]);
 
 /**
  * One-shot environment diagnosis for new users: reports what's configured,
- * what's missing, and the exact fix — never printing a secret value (only
+ * what's missing, and the exact fix - never printing a secret value (only
  * whether each is set). `live: true` additionally makes a real, read-only
  * call to your standalone VBCS instance to prove the credentials work.
  */
@@ -52,7 +52,7 @@ export async function runDoctor(params: { repoRoot?: string; live?: boolean } = 
     } catch {
       add({ name: "git", status: "fail", detail: "not found on PATH", fix: "Install git (https://git-scm.com) and make sure it's on PATH." });
     }
-    add({ name: "Config file", status: "ok", detail: `${resolveEnvFile()}${fs.existsSync(resolveEnvFile()) ? "" : " (not created yet — env vars / plugin config still apply)"}` });
+    add({ name: "Config file", status: "ok", detail: `${resolveEnvFile()}${fs.existsSync(resolveEnvFile()) ? "" : " (not created yet - env vars / plugin config still apply)"}` });
 
     // Workspace + repos
     let repos: string[] = [];
@@ -62,10 +62,10 @@ export async function runDoctor(params: { repoRoot?: string; live?: boolean } = 
       if (!configured) {
         add({ name: "VBS workspace", status: "warn", detail: "VBS_WORKSPACE_DIR not set", fix: "Set VBS_WORKSPACE_DIR to a folder for your repo checkouts (run `ovb3 init` or /link)." });
       } else if (!workspace) {
-        add({ name: "VBS workspace", status: "warn", detail: `${configured} doesn't exist yet — it will be created on the first git_clone`, fix: "Nothing to do, or create the folder yourself." });
+        add({ name: "VBS workspace", status: "warn", detail: `${configured} doesn't exist yet - it will be created on the first git_clone`, fix: "Nothing to do, or create the folder yourself." });
       } else {
         repos = listRepos();
-        add({ name: "VBS workspace", status: "ok", detail: `${workspace} — ${repos.length} repo checkout(s): ${repos.join(", ") || "none yet"}` });
+        add({ name: "VBS workspace", status: "ok", detail: `${workspace} - ${repos.length} repo checkout(s): ${repos.join(", ") || "none yet"}` });
       }
     } catch (err) {
       add({ name: "VBS workspace", status: "fail", detail: (err as Error).message, fix: "Create that folder or point VBS_WORKSPACE_DIR at an existing one." });
@@ -128,13 +128,13 @@ export async function runDoctor(params: { repoRoot?: string; live?: boolean } = 
     add(
       ciUser && ciBase
         ? { name: "VB Studio CI API", status: "ok", detail: `credentials set; base ${ciBase}` }
-        : { name: "VB Studio CI API", status: "skip", detail: "optional — needed only for vbstudio_trigger_build / status / params", fix: "Set VBSTUDIO_API_TOKEN (or API username/password) and VBSTUDIO_API_BASE_URL or VBSTUDIO_GIT_REMOTE_URL." }
+        : { name: "VB Studio CI API", status: "skip", detail: "optional - needed only for vbstudio_trigger_build / status / params", fix: "Set VBSTUDIO_API_TOKEN (or API username/password) and VBSTUDIO_API_BASE_URL or VBSTUDIO_GIT_REMOTE_URL." }
     );
 
     // Standalone VBCS
     const vbcsConfigured = set("VBCS_BASE_URL") && set("VBCS_IDCS_USERNAME") && set("VBCS_IDCS_PASSWORD");
     if (!vbcsConfigured) {
-      add({ name: "Standalone VBCS", status: "skip", detail: "optional — VBCS_BASE_URL / VBCS_IDCS_USERNAME / VBCS_IDCS_PASSWORD not all set", fix: "Only needed for VBCS instances without a VB Studio project (run /link)." });
+      add({ name: "Standalone VBCS", status: "skip", detail: "optional - VBCS_BASE_URL / VBCS_IDCS_USERNAME / VBCS_IDCS_PASSWORD not all set", fix: "Only needed for VBCS instances without a VB Studio project (run /link)." });
     } else if (params.live) {
       try {
         const apps = (await listApplications()) as { totalProjectCount?: number };

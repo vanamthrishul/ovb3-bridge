@@ -8,10 +8,10 @@ import * as artifacts from "./tools/artifacts.js";
 import * as git from "./tools/git.js";
 
 /**
- * `ovb3 init` — interactive guided setup, the CLI-native equivalent of the
+ * `ovb3 init` - interactive guided setup, the CLI-native equivalent of the
  * Claude Code /link slash command. Same rule as /link: only ever writes the
  * non-secret fields (VBS_WORKSPACE_DIR, VBCS_REPO_PATH, VBCS_APP_NAME,
- * VBCS_BASE_URL) — credentials are always the user's to fill in by hand.
+ * VBCS_BASE_URL) - credentials are always the user's to fill in by hand.
  */
 
 async function askYesNo(rl: readline.Interface, question: string, defaultYes = true): Promise<boolean> {
@@ -29,7 +29,7 @@ async function vbsFlow(rl: readline.Interface): Promise<void> {
     const checkoutInput = (await rl.question("Absolute path to the checkout: ")).trim();
     const resolved = path.resolve(checkoutInput);
     if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
-      console.log(`  ! ${resolved} does not exist or isn't a directory — skipping VB Studio setup.`);
+      console.log(`  ! ${resolved} does not exist or isn't a directory - skipping VB Studio setup.`);
       return;
     }
     const workspaceDir = path.dirname(resolved);
@@ -72,7 +72,7 @@ async function vbsFlow(rl: readline.Interface): Promise<void> {
     upsertEnvVars({ VBCS_APP_NAME: apps[0] });
     console.log(`  Set VBCS_APP_NAME=${apps[0]} (only app found)`);
   } else {
-    console.log("  No webApps/ found yet — that's fine if the repo is still empty.");
+    console.log("  No webApps/ found yet - that's fine if the repo is still empty.");
   }
 
   console.log("  Still needed in .env, fill in yourself: VBSTUDIO_GIT_USERNAME, VBSTUDIO_GIT_TOKEN");
@@ -98,18 +98,18 @@ async function vbcsFlow(rl: readline.Interface): Promise<void> {
       } else {
         console.log(
           "  Warning: this looks like a login-redirect URL (contains oauth2 + query params) but no " +
-            "idcs_app_resource_url param was found — double-check this is really the instance base URL, " +
+            "idcs_app_resource_url param was found - double-check this is really the instance base URL, " +
             "not a one-time SSO link."
         );
       }
     } catch {
-      // Not a parseable URL — fall through and use it as typed.
+      // Not a parseable URL - fall through and use it as typed.
     }
   }
 
   const stripped = baseUrl.replace(/\/ic\/builder.*$/i, "").replace(/\/$/, "");
   if (stripped !== baseUrl.replace(/\/$/, "")) {
-    console.log('  Stripped trailing "/ic/builder..." path — the tools append that themselves.');
+    console.log('  Stripped trailing "/ic/builder..." path - the tools append that themselves.');
   }
   baseUrl = stripped;
 
@@ -124,13 +124,13 @@ export async function runInit(): Promise<void> {
   try {
     console.log("OVB3 setup");
     console.log("==========");
-    console.log("This creates/updates your local .env — it never asks for secrets.\n");
+    console.log("This creates/updates your local .env - it never asks for secrets.\n");
 
     const { created } = ensureEnvFile();
     console.log(
       created
-        ? "No .env found — created one from .env.example."
-        : "Found existing .env — only the fields you choose below will change."
+        ? "No .env found - created one from .env.example."
+        : "Found existing .env - only the fields you choose below will change."
     );
 
     console.log("\nWhat do you want to link?");

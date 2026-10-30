@@ -41,9 +41,9 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           if npm view "ovb3-bridge@$VERSION" version >/dev/null 2>&1; then
-            echo "ovb3-bridge@$VERSION is already on npm — skipping publish."
+            echo "ovb3-bridge@$VERSION is already on npm - skipping publish."
           elif [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "::error::NPM_TOKEN is not set and $VERSION is not on npm — publish it manually or add the secret."
+            echo "::error::NPM_TOKEN is not set and $VERSION is not on npm - publish it manually or add the secret."
             exit 1
           else
             npm publish --provenance --access public

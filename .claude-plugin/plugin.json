@@ -1,7 +1,7 @@
 {
   "name": "ovb3",
-  "displayName": "OVB3 — Oracle Visual Builder Bridge",
-  "description": "Read/write/search VBCS artifacts, audit cross-app service calls, commit/push/pull, run grunt-vb-build/grunt-vb-audit, trigger VB Studio CI jobs, and manage standalone VBCS data — all from Claude.",
+  "displayName": "OVB3: Oracle Visual Builder Bridge",
+  "description": "Read/write/search VBCS artifacts, audit cross-app service calls, commit/push/pull, run grunt-vb-build/grunt-vb-audit, trigger VB Studio CI jobs, and manage standalone VBCS data - all from Claude.",
   "version": "0.3.2",
   "author": {
     "name": "Vanam Thrishul",
@@ -39,7 +39,7 @@
     "component_exchange_url": {
       "type": "string",
       "title": "Component Exchange URL (optional)",
-      "description": "Your org's Component Exchange URL, required by grunt-vb-build/grunt-vb-audit for apps using shared/custom components (the normal case). Leave blank if you don't know it yet — build/audit will surface Oracle's own clear error instead of guessing.",
+      "description": "Your org's Component Exchange URL, required by grunt-vb-build/grunt-vb-audit for apps using shared/custom components (the normal case). Leave blank if you don't know it yet - build/audit will surface Oracle's own clear error instead of guessing.",
       "required": false
     },
     "vbstudio_git_username": {

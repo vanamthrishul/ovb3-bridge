@@ -4,7 +4,7 @@ import path from "node:path";
 import { withLogging } from "../lib/logger.js";
 
 /**
- * REST client for a standalone Oracle VBCS instance's design-time API — for
+ * REST client for a standalone Oracle VBCS instance's design-time API - for
  * VBCS apps that are NOT backed by a VB Studio project (no git remote), so
  * the artifact/git tools in artifacts.ts and git.ts can't reach them.
  *
@@ -14,7 +14,7 @@ import { withLogging } from "../lib/logger.js";
  *
  * Oracle publishes exactly 14 endpoints for this API: application list/lock/
  * unlock, the token endpoint, credential CRUD, and data export/import. There
- * is no whole-app export/import, version, build or deploy endpoint — that's a
+ * is no whole-app export/import, version, build or deploy endpoint - that's a
  * property of Oracle's API, not a gap here.
  *
  * Separate product/API from VB Studio's own REST API (vbstudio-api.ts):
@@ -49,7 +49,7 @@ function baseUrl(): string {
 /**
  * Gets an OAuth token via POST {VBCS_BASE_URL}/ic/builder/public/token
  * (form-urlencoded; the real endpoint requires lowercase "username" even
- * though Oracle's docs page says "userName" — confirmed live). Cached per
+ * though Oracle's docs page says "userName" - confirmed live). Cached per
  * base-URL+user; vbcsRequest() drops it and retries once on a 401.
  */
 async function getAccessToken(forceFresh = false): Promise<string> {
@@ -71,7 +71,7 @@ async function getAccessToken(forceFresh = false): Promise<string> {
   if (!res.ok) {
     const detail = await res.text();
     throw new VbcsApiError(
-      `VBCS token request failed: ${res.status} ${res.statusText} — ${detail}` +
+      `VBCS token request failed: ${res.status} ${res.statusText} - ${detail}` +
         (res.status === 401 || res.status === 400 ? "\nCheck VBCS_IDCS_USERNAME / VBCS_IDCS_PASSWORD." : "")
     );
   }
@@ -103,7 +103,7 @@ async function vbcsRequest(pathAndQuery: string, init: RequestInit = {}): Promis
     res = await send(await getAccessToken(true));
   }
   if (!res.ok) {
-    throw new VbcsApiError(`VBCS API call to ${pathAndQuery} failed: ${res.status} ${res.statusText} — ${await res.text()}`);
+    throw new VbcsApiError(`VBCS API call to ${pathAndQuery} failed: ${res.status} ${res.statusText} - ${await res.text()}`);
   }
   return res;
 }
@@ -155,7 +155,7 @@ export interface ExportResult {
 }
 
 /**
- * Exports one business object's data (CSV) — or every object's data as a ZIP
+ * Exports one business object's data (CSV) - or every object's data as a ZIP
  * of CSVs when boName is omitted. `target: "deployment"` reads the
  * staging/live database instead of design-time. Binary-safe: the response is
  * CSV or ZIP, never JSON. Lock a live app first (vbcs_lock_application).
@@ -200,7 +200,7 @@ const IMPORT_CONTENT_TYPES: Record<string, string> = {
  * curl examples do (`-T file`), not multipart.
  *
  * Oracle's default is to REPLACE the object's existing data, so `mode` is
- * required — "append" adds rows (append=true), "replace" overwrites them.
+ * required - "append" adds rows (append=true), "replace" overwrites them.
  * `target: "deployment"` writes the staging/live database. Lock a live app
  * first (vbcs_lock_application).
  */
@@ -217,12 +217,12 @@ export async function importBusinessObjectData(params: {
     const ext = path.extname(file).toLowerCase();
     const contentType = IMPORT_CONTENT_TYPES[ext];
     if (!contentType) {
-      throw new VbcsApiError(`Unsupported import file type "${ext}" — use .csv, .xls, .xlsx (one object) or .zip (several).`);
+      throw new VbcsApiError(`Unsupported import file type "${ext}" - use .csv, .xls, .xlsx (one object) or .zip (several).`);
     }
 
     let boName = params.boName;
     if (ext === ".zip") {
-      if (boName) throw new VbcsApiError("boName must be omitted for a .zip import — the files inside name their own objects.");
+      if (boName) throw new VbcsApiError("boName must be omitted for a .zip import - the files inside name their own objects.");
     } else {
       const stem = path.basename(file, ext);
       if (!boName) boName = stem;
